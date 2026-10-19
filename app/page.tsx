@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { UnlockPanel } from './UnlockPanel';
 import { GetAppButton } from './GetAppButton';
 import { HomeContinuity } from './HomeContinuity';
+import { HomeFaq } from './HomeFaq';
 
 export default function Home() {
   return (
@@ -56,6 +57,8 @@ export default function Home() {
         </div>
 
         <HomeContinuity />
+
+        <HomeFaq />
 
         <section className="space-y-3" aria-label="For beneficiaries">
           <Link

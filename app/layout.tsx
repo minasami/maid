@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { SetupBanner } from './SetupBanner';
+import { BetaBanner } from './BetaBanner';
 import { AppNav } from './AppNav';
 import { MobilePublicNav } from './MobilePublicNav';
 import { SplashScreen } from './SplashScreen';
@@ -134,6 +135,7 @@ export default function RootLayout({
         <AppNav />
         <div className="mx-auto max-w-6xl px-4 pt-3 w-full">
           <SetupBanner />
+          <div className="mt-2"><BetaBanner /></div>
         </div>
         <div id="main-content" className="flex-1 pb-24 md:pb-8">
           {children}

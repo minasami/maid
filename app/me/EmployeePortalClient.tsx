@@ -308,6 +308,11 @@ export default function EmployeePortalClient() {
                       ? ' — late renewals still accepted.'
                       : ' — renew by then to continue without interruption.'}
                   </p>
+                  <p className="text-sm font-semibold" style={{ color: deadlinePassed ? '#b45309' : 'var(--aid-emerald)' }}>
+                    {deadlinePassed
+                      ? 'Deadline passed · late renewals welcome'
+                      : `${Math.max(0, Math.ceil((new Date(deadline).getTime() - Date.now()) / 86400000))} days left · يوم متبقٍ`}
+                  </p>
                 </div>
               </div>
               {regimens.length === 0 ? (
