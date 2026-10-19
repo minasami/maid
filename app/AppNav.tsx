@@ -111,15 +111,15 @@ export function AppNav() {
           <button
             type="button"
             onClick={() => setStaffOpen((v) => !v)}
-            className="flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left text-[11px] font-semibold uppercase tracking-wide text-violet-700 hover:bg-violet-50/80"
+            className="flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left text-[11px] font-semibold uppercase tracking-wide text-[#0f6e56] hover:bg-[#f4f1ea]"
             aria-expanded={staffOpen}
           >
             <span>{staffOpen ? '▾' : '▸'} Staff tools</span>
-            <span className="font-normal normal-case text-violet-500" dir="rtl">
+            <span className="font-normal normal-case text-[#5e6b64]" dir="rtl">
               أدوات التشغيل
             </span>
             {!staffOpen && onStaff && (
-              <span className="ml-auto rounded-full bg-violet-100 px-2 py-0.5 text-[10px] normal-case font-medium text-violet-800">
+              <span className="ml-auto rounded-full bg-[#0f6e56]/10 px-2 py-0.5 text-[10px] normal-case font-medium text-[#0b5744]">
                 You are in ops
               </span>
             )}

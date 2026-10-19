@@ -165,7 +165,7 @@ export default function IntakeOpsPage() {
               type="button"
               onClick={load}
               disabled={loading}
-              className="rounded-xl border border-slate-200 bg-white/90 px-3 py-2 text-sm font-medium text-violet-700 hover:bg-violet-50 disabled:opacity-50 backdrop-blur"
+              className="rounded-xl border border-[#e4ddd2] bg-white/90 px-3 py-2 text-sm font-medium text-[#0f6e56] hover:bg-[#f4f1ea] disabled:opacity-50 backdrop-blur"
             >
               {loading ? 'Refreshing…' : 'Refresh'}
             </button>
@@ -207,7 +207,17 @@ export default function IntakeOpsPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm space-y-3 backdrop-blur">
+        <div className="rounded-2xl border border-white/80 bg-white/90 p-4 shadow-sm space-y-3 backdrop-blur">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="aid-section-label">Staff pick list · قائمة التشغيل</p>
+              <p className="text-sm font-semibold text-slate-800">Pick a request to process</p>
+            </div>
+            <p className="text-xs text-slate-500">
+              {filtered.length} of {rows.length}
+              {q ? ` · “${q}”` : ''}
+            </p>
+          </div>
           <div>
             <label className="text-xs font-semibold text-slate-600">Status · الحالة</label>
             <SearchablePicker
@@ -229,7 +239,7 @@ export default function IntakeOpsPage() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Name, emp ID, patient, drug…"
-                className="w-full rounded-xl border border-slate-200 bg-white/80 py-3 pl-9 pr-10 text-base outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
+                className="w-full rounded-xl border border-[#e4ddd2] bg-white py-3 pl-9 pr-10 text-base outline-none focus:border-[#0f6e56] focus:ring-2 focus:ring-[#0f6e56]/20"
                 dir="auto"
               />
               {q && (
@@ -242,10 +252,7 @@ export default function IntakeOpsPage() {
                 </button>
               )}
             </div>
-            <p className="text-xs text-slate-500 mt-1">
-              Showing {filtered.length} of {rows.length}
-              {q ? ` · “${q}”` : ''}
-            </p>
+            <p className="text-xs text-slate-500 mt-1">Search by name, employee ID, patient, or medicine.</p>
           </div>
         </div>
 
@@ -290,12 +297,12 @@ export default function IntakeOpsPage() {
             return (
               <article
                 key={r.id}
-                className="rounded-2xl border border-white/80 bg-white/90 p-4 shadow-sm space-y-2.5 backdrop-blur active:bg-white"
+                className="rounded-2xl border border-white/90 bg-white shadow-sm overflow-hidden"
               >
-                <div className="flex items-start justify-between gap-2">
+                <div className="bg-[#f4f1ea]/70 px-4 py-3 flex items-start justify-between gap-2 border-b border-[#e4ddd2]">
                   <div className="min-w-0">
-                    <p className="font-semibold text-slate-900 truncate">{r.emp_name || '—'}</p>
-                    <p className="text-xs text-slate-500 font-mono">{r.emp_id || 'no emp ID'}</p>
+                    <p className="aid-display text-lg leading-tight truncate">{r.emp_name || '—'}</p>
+                    <p className="text-xs text-slate-500 font-mono mt-0.5">{r.emp_id || 'no emp ID'}</p>
                   </div>
                   <div className="text-right shrink-0 space-y-1">
                     <span
@@ -316,7 +323,7 @@ export default function IntakeOpsPage() {
                     {names.slice(0, 4).map((n) => (
                       <span
                         key={n}
-                        className="rounded-lg bg-slate-50 border border-slate-100 px-2 py-0.5 text-[11px] text-slate-600"
+                        className="rounded-lg bg-[#f4f1ea] border border-[#e4ddd2] px-2 py-0.5 text-[11px] text-slate-600"
                       >
                         {n}
                       </span>
@@ -331,24 +338,25 @@ export default function IntakeOpsPage() {
                   {r.program_id && (
                     <Link
                       href={`/programs/${r.program_id}`}
-                      className="text-[11px] font-medium text-violet-700"
+                      className="text-[11px] font-semibold text-[#0f6e56]"
                     >
                       Program →
                     </Link>
                   )}
                 </div>
+                </div>
               </article>
             );
           })}
           {!filtered.length && !loading && !error && (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-white/80 p-8 text-center text-slate-500 text-sm space-y-2 backdrop-blur">
+            <div className="rounded-2xl border border-dashed border-[#e4ddd2] bg-white/80 p-8 text-center text-slate-500 text-sm space-y-2 backdrop-blur">
               {q ? (
                 <>
                   <p>No matches for “{q}”.</p>
                   <button
                     type="button"
                     onClick={() => setQ('')}
-                    className="text-violet-700 font-medium underline"
+                    className="text-[#0f6e56] font-medium underline"
                   >
                     Clear search
                   </button>
@@ -360,14 +368,14 @@ export default function IntakeOpsPage() {
                   </p>
                   <p className="font-medium text-slate-700">Queue is clear</p>
                   <p className="text-xs">Nothing waiting to process</p>
-                  <Link href="/claims" className="inline-block mt-2 text-violet-700 font-semibold">
+                  <Link href="/claims" className="inline-block mt-2 text-[#0f6e56] font-semibold">
                     Continue to Claims →
                   </Link>
                 </>
               ) : (
                 <>
                   <p>No “{FILTERS.find((f) => f.id === status)?.label || status}” rows.</p>
-                  <Link href="/intake" className="text-emerald-700 font-medium underline">
+                  <Link href="/intake" className="text-[#0f6e56] font-medium underline">
                     Submit a test request
                   </Link>
                 </>
@@ -378,7 +386,7 @@ export default function IntakeOpsPage() {
 
         <div className="hidden md:block rounded-2xl border border-white/80 bg-white/90 shadow-sm overflow-x-auto backdrop-blur">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50/80 text-left text-xs text-slate-500">
+            <thead className="bg-[#f4f1ea]/80 text-left text-[11px] uppercase tracking-wide text-slate-500">
               <tr>
                 <th className="p-3 font-semibold">Status</th>
                 <th className="p-3 font-semibold">Employee</th>
@@ -393,7 +401,7 @@ export default function IntakeOpsPage() {
               {filtered.map((r) => {
                 const names = medList(r.meds);
                 return (
-                  <tr key={r.id} className="border-t hover:bg-slate-50/80">
+                  <tr key={r.id} className="border-t border-[#e4ddd2] hover:bg-[#f4f1ea]/40">
                     <td className="p-3">
                       <span
                         className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${statusStyle(
@@ -433,7 +441,7 @@ export default function IntakeOpsPage() {
                       {r.program_id ? (
                         <Link
                           href={`/programs/${r.program_id}`}
-                          className="text-violet-700 hover:underline"
+                          className="text-[#0f6e56] hover:underline"
                         >
                           {String(r.program_id).slice(0, 8)}
                         </Link>
@@ -453,7 +461,7 @@ export default function IntakeOpsPage() {
                         <button
                           type="button"
                           onClick={() => setQ('')}
-                          className="text-violet-700 underline"
+                          className="text-[#0f6e56] underline"
                         >
                           clear search
                         </button>
@@ -461,7 +469,7 @@ export default function IntakeOpsPage() {
                     ) : status === 'submitted' ? (
                       <>
                         Queue clear ·{' '}
-                        <Link href="/claims" className="text-violet-700 underline">
+                        <Link href="/claims" className="text-[#0f6e56] underline">
                           go to Claims
                         </Link>
                       </>
@@ -483,7 +491,7 @@ export default function IntakeOpsPage() {
         {waiting === 0 && status === 'submitted' && !loading && !error && (
           <p className="text-center text-sm text-slate-500">
             Nothing waiting ·{' '}
-            <Link href="/claims" className="text-violet-700 font-medium underline">
+            <Link href="/claims" className="text-[#0f6e56] font-medium underline">
               go to Claims
             </Link>
           </p>
