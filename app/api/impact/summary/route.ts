@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getImpactSummary } from '@/lib/impact';
+import { resolveImpactScope } from '@/lib/impactScope';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
     const period = req.nextUrl.searchParams.get('period') || undefined;
-    const summary = await getImpactSummary(period);
+    const scope = await resolveImpactScope();
+    const summary = await getImpactSummary(period, scope);
     return NextResponse.json({ ok: true, summary });
   } catch (e: unknown) {
     return NextResponse.json(

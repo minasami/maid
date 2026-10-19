@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ImpactCheckin } from './ImpactCheckin';
 import { SearchablePicker } from '@/components/SearchablePicker';
@@ -59,14 +60,16 @@ export default function EmployeePortalClient() {
   const [replyBusy, setReplyBusy] = useState(false);
   const [replyMsg, setReplyMsg] = useState<string | null>(null);
 
+  const search = useSearchParams();
   useEffect(() => {
     const p = loadProfile();
-    if (p) {
-      setCompany(p.company || '');
-      setEmpId(p.emp_id || '');
-      setPhone(p.phone || '');
-    }
-  }, []);
+    const qCompany = search.get('company');
+    const qEmp = search.get('emp_id');
+    const qPhone = search.get('phone');
+    setCompany(qCompany || p?.company || '');
+    setEmpId(qEmp || p?.emp_id || '');
+    setPhone(qPhone || p?.phone || '');
+  }, [search]);
 
   async function lookup(e?: React.FormEvent) {
     e?.preventDefault();

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { FlowSteps } from '../FlowSteps';
 import { getImpactSummary } from '@/lib/impact';
 import { resolveImpactScope } from '@/lib/impactScope';
+import { ImpactAsk } from './ImpactAsk';
 
 export const dynamic = 'force-dynamic';
 
@@ -167,20 +168,7 @@ export default async function ImpactPage({
               )}
             </section>
 
-            {data.voice.checkins === 0 && (
-              <section className="rounded-2xl border border-[#0f6e56]/20 bg-[#0f6e56]/5 p-5 space-y-2">
-                <h2 className="aid-display text-xl">Ask people to answer</h2>
-                <p className="text-sm text-slate-600">
-                  Reach and delivery already show. Depth and life appear when beneficiaries open My profile and send this month’s check-in.
-                </p>
-                <p className="text-sm text-slate-500" dir="rtl">
-                  اطلب من المستفيد فتح الملف والإجابة على سؤال هذا الشهر.
-                </p>
-                <Link href="/me" className="inline-block aid-cta-primary px-4 py-2 text-sm">
-                  Open profile check-in
-                </Link>
-              </section>
-            )}
+            <ImpactAsk period={period} hasVoices={data.voice.checkins > 0} />
 
             <section className="rounded-2xl border border-white/90 bg-white/90 shadow-sm overflow-hidden">
               <div className="px-4 py-3 border-b border-[#e4ddd2] bg-[#f4f1ea]/70 flex justify-between gap-2">
