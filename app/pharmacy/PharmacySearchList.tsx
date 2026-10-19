@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { PharmacyLine } from '@/lib/pharmacy';
 
+type RouteFilter = 'all' | 'eva' | 'not';
+
 function matches(line: PharmacyLine, q: string): boolean {
   if (!q) return true;
   const hay = [
@@ -30,6 +32,22 @@ function matches(line: PharmacyLine, q: string): boolean {
     .every((token) => hay.includes(token));
 }
 
+function qtyOf(l: PharmacyLine) {
+  return l.dispensed_qty ?? l.approved_qty ?? l.qty;
+}
+
+function RouteBadge({ preferred }: { preferred: boolean }) {
+  return preferred ? (
+    <span className="inline-flex items-center rounded-full bg-[#0f6e56]/10 px-2 py-0.5 text-[11px] font-bold text-[#0b5744]">
+      EVA
+    </span>
+  ) : (
+    <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-700">
+      NOT EVA
+    </span>
+  );
+}
+
 export function PharmacySearchList({
   lines,
   emptyHint,
@@ -38,8 +56,15 @@ export function PharmacySearchList({
   emptyHint?: boolean;
 }) {
   const [q, setQ] = useState('');
+  const [route, setRoute] = useState<RouteFilter>('all');
 
-  const filtered = useMemo(() => lines.filter((l) => matches(l, q.trim())), [lines, q]);
+  const filtered = useMemo(() => {
+    return lines.filter((l) => {
+      if (route === 'eva' && !l.company_preferred) return false;
+      if (route === 'not' && l.company_preferred) return false;
+      return matches(l, q.trim());
+    });
+  }, [lines, q, route]);
 
   const groups = useMemo(() => {
     const map = new Map<string, PharmacyLine[]>();
@@ -50,12 +75,24 @@ export function PharmacySearchList({
     return Array.from(map.entries());
   }, [filtered]);
 
+  const evaShown = filtered.filter((l) => l.company_preferred).length;
+
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border bg-white p-3 shadow-sm space-y-2">
-        <label htmlFor="pharmacy-search" className="text-sm font-semibold text-slate-800">
-          Search · بحث
-        </label>
+      <div className="rounded-2xl border border-white/80 bg-white/90 p-4 shadow-sm space-y-3 backdrop-blur">
+        <div className="flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <p className="aid-section-label">Pick list · قائمة الصرف</p>
+            <label htmlFor="pharmacy-search" className="text-sm font-semibold text-slate-800">
+              Search patients and medicines
+            </label>
+          </div>
+          <p className="text-xs text-slate-500">
+            {filtered.length} of {lines.length} lines · {groups.length} patient
+            {groups.length === 1 ? '' : 's'} · {evaShown} EVA
+          </p>
+        </div>
+
         <div className="relative">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
             ⌕
@@ -65,8 +102,8 @@ export function PharmacySearchList({
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Patient, employee, drug, program, EVA…"
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-9 pr-10 text-base outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+            placeholder="Patient, employee, drug, program…"
+            className="w-full rounded-xl border border-[#e4ddd2] bg-white py-3 pl-9 pr-16 text-base outline-none focus:border-[#0f6e56] focus:ring-2 focus:ring-[#0f6e56]/20"
             autoComplete="off"
             dir="auto"
           />
@@ -74,48 +111,72 @@ export function PharmacySearchList({
             <button
               type="button"
               onClick={() => setQ('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 hover:bg-slate-200"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 hover:bg-slate-100"
               aria-label="Clear search"
             >
               Clear
             </button>
           )}
         </div>
-        <p className="text-xs text-slate-500">
-          Showing {filtered.length} of {lines.length} lines · {groups.length} patient
-          {groups.length === 1 ? '' : 's'}
-          {q ? (
-            <span className="text-teal-800 font-medium"> · filter: “{q}”</span>
-          ) : null}
-        </p>
+
+        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Route filter">
+          {(
+            [
+              ['all', 'All routes'],
+              ['eva', 'EVA only'],
+              ['not', 'Not EVA'],
+            ] as const
+          ).map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={route === key}
+              onClick={() => setRoute(key)}
+              className={`min-h-[2.25rem] rounded-full px-3.5 py-1 text-xs font-semibold border transition ${
+                route === key
+                  ? 'bg-[#0f6e56] text-white border-[#0f6e56]'
+                  : 'bg-white border-[#e4ddd2] text-slate-600 hover:border-[#0f6e56]/40'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {groups.length === 0 && (
-        <div className="rounded-2xl border border-dashed bg-white p-8 text-center text-sm text-slate-500 space-y-2">
-          {q ? (
+        <div className="rounded-2xl border border-dashed border-[#e4ddd2] bg-white/80 p-8 text-center text-sm text-slate-500 space-y-2">
+          {q || route !== 'all' ? (
             <>
-              <p>No matches for “{q}”.</p>
+              <p>No matches{q ? ` for “${q}”` : ''}.</p>
               <button
                 type="button"
-                onClick={() => setQ('')}
-                className="text-teal-700 font-medium underline"
+                onClick={() => {
+                  setQ('');
+                  setRoute('all');
+                }}
+                className="text-[#0f6e56] font-medium underline"
               >
-                Clear search
+                Clear filters
               </button>
             </>
           ) : emptyHint ? (
             <>
-              <p>No lines for this period / filter.</p>
+              <p className="font-medium text-slate-700">No lines for this period.</p>
               <p className="text-xs">
                 Process the{' '}
-                <Link href="/intake-ops" className="text-violet-700 font-medium underline">
+                <Link href="/intake-ops" className="text-[#0f6e56] font-medium underline">
                   queue
                 </Link>{' '}
                 and generate{' '}
-                <Link href="/refills" className="text-violet-700 font-medium underline">
+                <Link href="/refills" className="text-[#0f6e56] font-medium underline">
                   refills
                 </Link>{' '}
                 first.
+              </p>
+              <p className="text-xs" dir="rtl">
+                لا توجد أسطر لهذا الشهر — عالج الطابور ثم أنشئ دورات الصرف.
               </p>
             </>
           ) : (
@@ -130,34 +191,36 @@ export function PharmacySearchList({
         return (
           <article
             key={cycleId}
-            className="rounded-2xl border bg-white shadow-sm overflow-hidden"
+            className="rounded-2xl border border-white/90 bg-white shadow-sm overflow-hidden"
           >
-            <div className="bg-slate-50 px-4 py-3 flex flex-wrap justify-between gap-2 border-b">
-              <div>
-                <p className="font-semibold text-slate-900">{head.patient_name}</p>
-                <p className="text-xs text-slate-600">
+            <div className="bg-[#f4f1ea]/70 px-4 py-3 flex flex-wrap justify-between gap-3 border-b border-[#e4ddd2]">
+              <div className="min-w-0">
+                <p className="aid-display text-lg leading-tight truncate">{head.patient_name}</p>
+                <p className="text-xs text-slate-600 mt-0.5">
                   {head.employee_name}
+                  {head.employee_id ? ` · ${head.employee_id}` : ''}
                   {head.program_code ? ` · ${head.program_code}` : ''}
                   {head.relation ? ` · ${head.relation}` : ''}
                 </p>
               </div>
-              <div className="text-right space-y-1">
-                <span className="inline-block rounded-full bg-white border px-2 py-0.5 text-[11px] font-semibold">
-                  {head.cycle_status}
+              <div className="text-right space-y-1 shrink-0">
+                <span className="inline-block rounded-full bg-white border border-[#e4ddd2] px-2 py-0.5 text-[11px] font-semibold capitalize">
+                  {head.cycle_status.replace(/_/g, ' ')}
                 </span>
                 <p className="text-[11px] text-slate-500">
-                  {evaLines}/{group.length} EVA
+                  {evaLines}/{group.length} EVA · {group.length} line
+                  {group.length === 1 ? '' : 's'}
                 </p>
                 <Link
                   href={`/refills/${cycleId}`}
-                  className="block text-xs font-medium text-violet-700 hover:underline"
+                  className="block text-xs font-semibold text-[#0f6e56] hover:underline"
                 >
                   Cycle detail
                 </Link>
               </div>
             </div>
 
-            <ul className="md:hidden divide-y">
+            <ul className="md:hidden divide-y divide-[#e4ddd2]">
               {group.map((l) => (
                 <li
                   key={`${l.cycle_id}-${l.line_code}`}
@@ -166,55 +229,37 @@ export function PharmacySearchList({
                   <div className="min-w-0">
                     <p className="font-medium text-sm truncate">{l.drug_name}</p>
                     <p className="text-[11px] text-slate-500">
-                      Qty {l.dispensed_qty ?? l.approved_qty ?? l.qty}
-                      {' · '}
-                      {l.item_status}
+                      Qty {qtyOf(l)} · {l.item_status.replace(/_/g, ' ')}
                     </p>
                   </div>
-                  <span
-                    className={`shrink-0 text-[11px] font-bold px-2 py-0.5 rounded-full h-fit ${
-                      l.company_preferred
-                        ? 'bg-teal-100 text-teal-900'
-                        : 'bg-slate-100 text-slate-700'
-                    }`}
-                  >
-                    {l.company_preferred ? 'EVA' : 'NOT EVA'}
-                  </span>
+                  <RouteBadge preferred={!!l.company_preferred} />
                 </li>
               ))}
             </ul>
 
             <table className="hidden md:table w-full text-sm">
-              <thead className="text-xs text-slate-500 text-left">
+              <thead className="text-[11px] uppercase tracking-wide text-slate-500 text-left bg-white">
                 <tr>
-                  <th className="p-3 font-semibold">Drug</th>
-                  <th className="p-3 font-semibold">Qty</th>
-                  <th className="p-3 font-semibold">Route</th>
-                  <th className="p-3 font-semibold">Status</th>
+                  <th className="px-4 py-2.5 font-semibold">Drug</th>
+                  <th className="px-4 py-2.5 font-semibold">Qty</th>
+                  <th className="px-4 py-2.5 font-semibold">Route</th>
+                  <th className="px-4 py-2.5 font-semibold">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {group.map((l) => (
                   <tr
                     key={`${l.cycle_id}-${l.line_code}`}
-                    className="border-t hover:bg-slate-50/80"
+                    className="border-t border-[#e4ddd2] hover:bg-[#f4f1ea]/40"
                   >
-                    <td className="p-3 font-medium">{l.drug_name}</td>
-                    <td className="p-3">
-                      {l.dispensed_qty ?? l.approved_qty ?? l.qty}
+                    <td className="px-4 py-3 font-medium">{l.drug_name}</td>
+                    <td className="px-4 py-3 tabular-nums">{qtyOf(l)}</td>
+                    <td className="px-4 py-3">
+                      <RouteBadge preferred={!!l.company_preferred} />
                     </td>
-                    <td className="p-3">
-                      {l.company_preferred ? (
-                        <span className="text-xs font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full">
-                          EVA
-                        </span>
-                      ) : (
-                        <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full">
-                          NOT EVA
-                        </span>
-                      )}
+                    <td className="px-4 py-3 text-xs capitalize text-slate-600">
+                      {l.item_status.replace(/_/g, ' ')}
                     </td>
-                    <td className="p-3 text-xs text-slate-600">{l.item_status}</td>
                   </tr>
                 ))}
               </tbody>

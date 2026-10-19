@@ -284,8 +284,8 @@ export default async function PharmacyPage({
               })}
               className={`min-h-[2.5rem] rounded-full px-3.5 py-1.5 text-xs font-semibold border ${
                 (status || '') === s
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white/90 border-slate-200 text-slate-600 backdrop-blur'
+                  ? 'bg-[#0f6e56] text-white border-[#0f6e56]'
+                  : 'bg-white/90 border-[#e4ddd2] text-slate-600 backdrop-blur'
               }`}
             >
               {label}
