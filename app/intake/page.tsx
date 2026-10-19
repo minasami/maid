@@ -26,7 +26,7 @@ import { IntakeUrlPrefill } from '@/components/IntakeUrlPrefill';
 type MedLine = { name: string; qty: number };
 
 const field =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-base shadow-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none';
+  'w-full rounded-xl border border-[#e4ddd2] bg-white px-4 py-3 text-base shadow-sm focus:border-[#0f6e56] focus:ring-2 focus:ring-[#0f6e56]/20 outline-none';
 const label = 'block text-sm font-medium text-slate-700 mb-1.5';
 
 async function loadMedOptions(q: string): Promise<PickerOption[]> {
@@ -422,8 +422,9 @@ export default function IntakePage() {
             if (patch.hint) setDraftHint(patch.hint);
           }}
         />
-        <header className="space-y-1 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Submit request</h1>
+        <header className="space-y-2 text-center sm:text-left aid-rise">
+          <p className="aid-section-label">Step 1 of 2 · Submit</p>
+          <h1 className="aid-display text-3xl sm:text-4xl">Submit a request</h1>
           <p className="text-base text-slate-600" dir="rtl">تقديم طلب علاج شهري</p>
           <p className="text-sm text-slate-500">
             ~25k Egyptian medicines · أسعار السوق المصرية

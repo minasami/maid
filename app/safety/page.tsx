@@ -54,7 +54,7 @@ export default function SafetyPage() {
               <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
                 More tools · Safety
               </p>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              <h1 className="aid-display text-3xl sm:text-4xl">
                 Safety checklist
               </h1>
               <p className="text-sm text-slate-600" dir="rtl">

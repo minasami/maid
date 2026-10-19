@@ -74,7 +74,7 @@ export default async function RefillsPage({
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="aid-section-label">Step 5 of 5 · Refills</p>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              <h1 className="aid-display text-3xl sm:text-4xl">
                 Refills
               </h1>
               <p className="text-sm text-slate-600" dir="rtl">
