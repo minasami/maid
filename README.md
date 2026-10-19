@@ -5,7 +5,8 @@
 System of record: **Neon** (not Google Sheets).  
 Stack: **Next.js 14** · **Vercel** · **Neon PostgreSQL** · **GitHub**
 
-Live: [medical-aid-automation.vercel.app](https://medical-aid-automation.vercel.app)  
+Live: [medical-aid-automation.vercel.app](https://medical-aid-automation.vercel.app)
+Working fork: [minasami/maid](https://github.com/minasami/maid)  
 Guide: [/guide](https://medical-aid-automation.vercel.app/guide)
 
 ---

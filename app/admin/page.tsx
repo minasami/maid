@@ -31,9 +31,12 @@ export default function AdminPage() {
       <div className="mx-auto max-w-xl space-y-5">
         <header className="space-y-1">
           <p className="aid-section-label">Staff only · Admin</p>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Admin</h1>
+          <h1 className="aid-display text-3xl sm:text-4xl">Admin</h1>
           <p className="text-sm text-slate-600" dir="rtl">
             لوحة التشغيل · تسجيل الدخول · الأدوار · الأعلام
+          </p>
+          <p className="text-xs text-slate-500 max-w-md">
+            Google sign-in for staff. Org members see only their organization's queue, claims, and pharmacy.
           </p>
         </header>
 
