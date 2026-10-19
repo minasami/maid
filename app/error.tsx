@@ -19,25 +19,25 @@ export default function Error({
     <main className="flex min-h-[70vh] flex-col items-center justify-center gap-6 px-4 text-center">
       <BrandMark size="md" showTitle={false} />
       <div className="space-y-2 max-w-sm">
-        <h1 className="text-xl font-bold text-slate-900">Something went wrong</h1>
-        <p className="text-sm text-slate-600" dir="rtl">
-          حدث خطأ — حاول مرة أخرى
+        <p className="aid-section-label">Something went wrong</p>
+        <h1 className="aid-display text-3xl">We couldn\'t finish that</h1>
+        <p className="text-sm text-slate-600">
+          Your data is safe. Try again, or go home and pick a step.
+        </p>
+        <p className="text-sm text-slate-500" dir="rtl">
+          حدث خطأ. بياناتك آمنة — أعد المحاولة أو ارجع للرئيسية.
         </p>
         {error.digest && (
           <p className="text-[10px] font-mono text-slate-400">Ref: {error.digest}</p>
         )}
       </div>
       <div className="flex flex-wrap gap-2 justify-center">
-        <button
-          type="button"
-          onClick={reset}
-          className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
-        >
+        <button type="button" onClick={reset} className="aid-cta-primary px-5 py-2.5 text-sm">
           Try again · أعد المحاولة
         </button>
         <Link
           href="/"
-          className="rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+          className="rounded-2xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50"
         >
           Home
         </Link>

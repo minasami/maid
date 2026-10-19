@@ -70,18 +70,18 @@ export function SiteFooter() {
               <li>
                 <Link
                   href="/org/register"
-                  className="hover:text-violet-700 transition"
+                  className="hover:text-[#0f6e56] transition"
                 >
                   Register your organization
                 </Link>
               </li>
               <li>
-                <Link href="/sign-in" className="hover:text-violet-700 transition">
+                <Link href="/sign-in" className="hover:text-[#0f6e56] transition">
                   Staff sign-in
                 </Link>
               </li>
               <li>
-                <Link href="/status" className="hover:text-violet-700 transition">
+                <Link href="/status" className="hover:text-[#0f6e56] transition">
                   System status
                 </Link>
               </li>
@@ -90,7 +90,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-slate-100 pt-4 text-[11px] text-slate-400">
-          <p>Secure · bilingual · mobile-first</p>
+          <p>© 2026 Medical Aid · Secure · bilingual · mobile-first</p>
           <p dir="rtl">آمن · عربي / إنجليزي · مناسب للجوال</p>
         </div>
       </div>

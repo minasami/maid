@@ -15,7 +15,7 @@ export function BrandMark({
     size === 'lg' ? 'h-16 w-5' : size === 'sm' ? 'h-8 w-2.5' : 'h-11 w-3.5';
   const h =
     size === 'lg' ? 'h-5 w-16' : size === 'sm' ? 'h-2.5 w-8' : 'h-3.5 w-11';
-  const bar = dark ? 'bg-white' : 'bg-emerald-600';
+  const bar = dark ? 'bg-white' : 'bg-[#0f6e56]';
 
   return (
     <div className="flex flex-col items-center">
