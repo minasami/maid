@@ -1,5 +1,11 @@
 # WhatsApp setup (Meta Cloud API + Twilio)
 
+Beta: [maid-beta.vercel.app](https://maid-beta.vercel.app/notifications)  
+Production: [medical-aid-automation.vercel.app](https://medical-aid-automation.vercel.app/notifications)
+
+On beta, `WHATSAPP_DRY_RUN=1` and `WHATSAPP_NOTIFY_ON_INTAKE=1` are set so intake builds a confirmation but does not send until a provider is configured.
+
+
 Providers (pick one, or set `WHATSAPP_PROVIDER=meta|twilio|webhook`):
 
 1. **Meta Cloud API** (default if both configured)

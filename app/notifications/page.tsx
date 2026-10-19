@@ -4,6 +4,7 @@ import { FlowSteps } from '../FlowSteps';
 import { DryRunModeToggle } from '../DryRunModeToggle';
 import { LiveDryRunButton } from '../LiveDryRunButton';
 import { WhatsAppDryRunButton } from './WhatsAppDryRunButton';
+import { WhatsAppSetupPanel } from './WhatsAppSetupPanel';
 import { NotifyDueButton } from './NotifyDueButton';
 import { RenewalCampaignButton } from './RenewalCampaignButton';
 import { SafetyAlertButton } from './SafetyAlertButton';
@@ -28,9 +29,7 @@ export default function NotificationsPage() {
           <div className="flex flex-wrap justify-between gap-3">
             <div>
               <p className="aid-section-label">More tools · Notifications</p>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-                WhatsApp & alerts
-              </h1>
+              <h1 className="aid-display text-3xl sm:text-4xl">WhatsApp & alerts</h1>
               <p className="text-sm text-slate-600" dir="rtl">
                 واتساب · ميتا / تويليو · تجريبي · تنبيهات الصرف
               </p>
@@ -88,6 +87,13 @@ export default function NotificationsPage() {
             <span className="text-xs text-amber-700">env WHATSAPP_DRY_RUN</span>
           )}
         </div>
+
+        <WhatsAppSetupPanel
+          mode={status.mode}
+          hasMeta={!!status.has_meta}
+          hasTwilio={!!status.has_twilio}
+          hasWebhook={!!status.has_webhook}
+        />
 
         <DryRunModeToggle />
 
