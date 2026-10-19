@@ -38,6 +38,9 @@ export default function AdminPage() {
           <p className="text-xs text-slate-500 max-w-md">
             Google sign-in for staff. Org members see only their organization's queue, claims, and pharmacy.
           </p>
+          <Link href="/impact" className="inline-block text-sm font-semibold text-[#0f6e56] hover:underline">
+            Beneficiary impact dashboard →
+          </Link>
         </header>
 
         <div className="rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm backdrop-blur">

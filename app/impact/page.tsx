@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { FlowSteps } from '../FlowSteps';
 import { getImpactSummary } from '@/lib/impact';
+import { resolveImpactScope } from '@/lib/impactScope';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,8 +14,13 @@ function pct(n: number | null) {
   return n == null ? '—' : `${n}%`;
 }
 
-function score(n: number | null) {
-  return n == null ? '—' : `${n} / 5`;
+function Bar({ value, max = 5 }: { value: number | null; max?: number }) {
+  const w = value == null ? 0 : Math.round((value / max) * 100);
+  return (
+    <div className="h-2 rounded-full bg-[#e4ddd2] overflow-hidden">
+      <div className="h-full rounded-full bg-[#0f6e56]" style={{ width: `${w}%` }} />
+    </div>
+  );
 }
 
 export default async function ImpactPage({
@@ -23,10 +29,11 @@ export default async function ImpactPage({
   searchParams: { period?: string };
 }) {
   const period = searchParams.period || defaultPeriod();
+  const scope = await resolveImpactScope();
   let data = null as Awaited<ReturnType<typeof getImpactSummary>> | null;
   let error: string | null = null;
   try {
-    data = await getImpactSummary(period);
+    data = await getImpactSummary(period, scope);
   } catch (e: unknown) {
     error = e instanceof Error ? e.message : 'Could not load impact';
   }
@@ -35,10 +42,8 @@ export default async function ImpactPage({
     ? [
         { label: 'People reached', ar: 'من وصلهم الدعم', value: String(data.reach.unique_patients), hint: `${data.reach.active_programs} active programs` },
         { label: 'Continuity', ar: 'استمرار', value: `${data.continuity.avg_months_on_program} mo`, hint: `${data.continuity.dropouts} dropouts` },
-        { label: 'Delivered', ar: 'تم الصرف', value: pct(data.delivery.delivery_rate), hint: `${data.delivery.dispensed} of ${data.delivery.cycles} cycles` },
-        { label: 'Said it helped', ar: 'قالوا إنه ساعد', value: pct(data.voice.helped_rate), hint: `${data.voice.checkins} check-ins` },
-        { label: 'Depth of cover', ar: 'عمق التغطية', value: score(data.voice.avg_depth), hint: '1 little · 5 almost all' },
-        { label: 'Life this month', ar: 'جودة الحياة', value: score(data.voice.avg_life), hint: 'Self-reported' },
+        { label: 'Delivered', ar: 'تم الصرف', value: pct(data.delivery.delivery_rate), hint: `${data.delivery.dispensed} of ${data.delivery.cycles}` },
+        { label: 'Said it helped', ar: 'قالوا إنه ساعد', value: pct(data.voice.helped_rate), hint: `${data.voice.checkins} answers` },
       ]
     : [];
 
@@ -49,17 +54,17 @@ export default async function ImpactPage({
           <FlowSteps current={5} />
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="aid-section-label">More tools · Impact</p>
-              <h1 className="aid-display text-3xl sm:text-4xl">Are we helping?</h1>
+              <p className="aid-section-label">Organization dashboard · لوحة الأثر</p>
+              <h1 className="aid-display text-3xl sm:text-4xl">Beneficiary impact</h1>
               <p className="text-sm text-slate-600">
-                Reach, continuity, delivery, and what beneficiaries say about depth and daily life.
+                {data?.org_label || scope.label}. Reach, continuity, delivery, and what people say about depth and daily life.
               </p>
               <p className="text-sm text-slate-500" dir="rtl">
-                الوصول والاستمرار والصرف، وما يقوله المستفيد عن عمق الدعم وجودة حياته.
+                هل الدعم يصل؟ وهل يغيّر الاحتياج وجودة الحياة؟
               </p>
             </div>
             <Link href="/me" className="text-sm font-semibold text-[#0f6e56] hover:underline">
-              Beneficiary check-in →
+              How people answer →
             </Link>
           </div>
         </header>
@@ -76,51 +81,87 @@ export default async function ImpactPage({
 
         {data && (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
               {cards.map((c) => (
                 <div key={c.label} className="aid-kpi text-left space-y-1">
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{c.label}</p>
-                  <p className="aid-display text-2xl">{c.value}</p>
+                  <p className="aid-display text-3xl">{c.value}</p>
                   <p className="text-[11px] text-slate-500">{c.hint}</p>
                   <p className="text-[11px] text-slate-400" dir="rtl">{c.ar}</p>
                 </div>
               ))}
             </div>
 
-            <section className="rounded-2xl border border-white/90 bg-white/90 p-5 shadow-sm space-y-2">
-              <h2 className="aid-display text-xl">How to read this</h2>
-              <ul className="text-sm text-slate-600 space-y-1.5">
-                <li><strong>Reach</strong> — people currently on a chronic program.</li>
-                <li><strong>Continuity</strong> — average months they have stayed on support.</li>
-                <li><strong>Delivered</strong> — share of this month’s refill cycles that were dispensed.</li>
-                <li><strong>Said it helped</strong> — yes or somewhat, from the profile check-in.</li>
-                <li><strong>Depth</strong> — how much of their medicine need they say was covered (1–5).</li>
-                <li><strong>Life</strong> — how they rate daily life this month (1–5). Not a clinical score.</li>
-              </ul>
-              <p className="text-xs text-slate-500">
-                Response rate this month: {pct(data.voice.response_rate)} of employees on a program.
-                Low response means the numbers describe the people who answered, not everyone.
-              </p>
-              <p className="text-xs text-slate-500" dir="rtl">
-                هذا رأي المستفيد، وليس تشخيصاً طبياً. إذا قلّ عدد الإجابات فالرقم يصف من أجاب فقط.
-              </p>
-            </section>
+            <div className="grid gap-3 md:grid-cols-2">
+              <section className="rounded-2xl border border-white/90 bg-white/90 p-5 shadow-sm space-y-3">
+                <h2 className="aid-display text-xl">Did it help?</h2>
+                <p className="text-xs text-slate-500">From this month’s check-ins · من إجابات هذا الشهر</p>
+                {(
+                  [
+                    ['Yes', data.voice.helped_yes, 'bg-[#0f6e56]'],
+                    ['Somewhat', data.voice.helped_somewhat, 'bg-[#0d9488]'],
+                    ['No', data.voice.helped_no, 'bg-slate-400'],
+                  ] as const
+                ).map(([label, count, color]) => {
+                  const total = data.voice.checkins || 1;
+                  const w = data.voice.checkins ? Math.round((count / total) * 100) : 0;
+                  return (
+                    <div key={label} className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span>{label}</span>
+                        <span className="tabular-nums text-slate-500">{count} · {w}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-[#e4ddd2] overflow-hidden">
+                        <div className={`h-full ${color}`} style={{ width: `${w}%` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+                <p className="text-xs text-slate-500">
+                  Response rate {pct(data.voice.response_rate)} of employees on a program.
+                </p>
+              </section>
+
+              <section className="rounded-2xl border border-white/90 bg-white/90 p-5 shadow-sm space-y-4">
+                <h2 className="aid-display text-xl">How deep, how much</h2>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span>Depth of cover</span>
+                    <span className="tabular-nums">{data.voice.avg_depth == null ? '—' : `${data.voice.avg_depth} / 5`}</span>
+                  </div>
+                  <Bar value={data.voice.avg_depth} />
+                  <p className="text-[11px] text-slate-500" dir="rtl">كم غطى من الاحتياج الدوائي</p>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span>Daily life this month</span>
+                    <span className="tabular-nums">{data.voice.avg_life == null ? '—' : `${data.voice.avg_life} / 5`}</span>
+                  </div>
+                  <Bar value={data.voice.avg_life} />
+                  <p className="text-[11px] text-slate-500" dir="rtl">جودة الحياة كما يصفها المستفيد</p>
+                </div>
+                <p className="text-xs text-slate-500">
+                  1 is little or hard. 5 is almost all of the need, or a good month. Not a clinical score.
+                </p>
+              </section>
+            </div>
 
             <section className="rounded-2xl border border-white/90 bg-white/90 shadow-sm overflow-hidden">
-              <div className="px-4 py-3 border-b border-[#e4ddd2] bg-[#f4f1ea]/70">
+              <div className="px-4 py-3 border-b border-[#e4ddd2] bg-[#f4f1ea]/70 flex justify-between gap-2">
                 <h2 className="aid-display text-lg">Voices this month</h2>
+                <span className="text-xs text-slate-500">{data.recent.length} shown</span>
               </div>
               {data.recent.length === 0 ? (
                 <p className="p-6 text-sm text-slate-500">
-                  No check-ins yet. Employees answer on My profile after they sign in with company, ID, and phone.
+                  No check-ins yet. People answer on My profile with company, ID, and phone.
                 </p>
               ) : (
                 <ul className="divide-y divide-[#e4ddd2]">
                   {data.recent.map((row, i) => (
                     <li key={`${row.created_at}-${i}`} className="px-4 py-3 flex flex-wrap justify-between gap-2 text-sm">
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-medium">{row.emp_name || 'Employee'}</p>
-                        <p className="text-xs text-slate-500">{row.company} · {row.helped}</p>
+                        <p className="text-xs text-slate-500 capitalize">{row.company} · {row.helped}</p>
                         {row.note && <p className="text-xs text-slate-600 mt-1">{row.note}</p>}
                       </div>
                       <div className="text-right text-xs text-slate-500">
@@ -132,6 +173,10 @@ export default async function ImpactPage({
                 </ul>
               )}
             </section>
+
+            <p className="text-xs text-slate-500">
+              Reach, continuity, and delivery come from programs and refills. Depth and life come from the people you support. A low response rate means the voice numbers describe who answered, not everyone.
+            </p>
           </>
         )}
       </div>

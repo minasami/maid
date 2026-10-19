@@ -115,6 +115,7 @@ export async function getImpactCheckin(input: {
 
 export type ImpactSummary = {
   period: string;
+  org_label: string;
   reach: {
     active_programs: number;
     unique_patients: number;
@@ -155,8 +156,27 @@ function n(v: unknown) {
   return Number.isFinite(x) ? x : 0;
 }
 
-export async function getImpactSummary(period = currentPeriod()): Promise<ImpactSummary> {
+export type ImpactScope = {
+  all: boolean;
+  org_ids: string[];
+  companies: string[];
+  label: string;
+};
+
+export async function getImpactSummary(
+  period = currentPeriod(),
+  scope: ImpactScope = { all: true, org_ids: [], companies: [], label: 'All organizations' }
+): Promise<ImpactSummary> {
   await ensureImpactTables();
+
+  const programFilter = scope.all || !scope.org_ids.length
+    ? 'TRUE'
+    : 'org_id = ANY($2::uuid[])';
+  const cycleFilter = scope.all || !scope.org_ids.length
+    ? 'period = $1'
+    : 'period = $1 AND program_id IN (SELECT id FROM chronic_programs WHERE org_id = ANY($2::uuid[]))';
+  const params: unknown[] = [period];
+  if (!scope.all && scope.org_ids.length) params.push(scope.org_ids);
 
   const ops = await query<{
     active_programs: string;
@@ -168,18 +188,24 @@ export async function getImpactSummary(period = currentPeriod()): Promise<Impact
     dispensed: string;
   }>(
     `SELECT
-       (SELECT count(*)::text FROM chronic_programs WHERE status = 'active') AS active_programs,
-       (SELECT count(DISTINCT dependent_id)::text FROM chronic_programs WHERE status = 'active') AS unique_patients,
-       (SELECT count(DISTINCT employee_id)::text FROM chronic_programs WHERE status = 'active') AS unique_employees,
+       (SELECT count(*)::text FROM chronic_programs WHERE status = 'active' AND ${programFilter}) AS active_programs,
+       (SELECT count(DISTINCT dependent_id)::text FROM chronic_programs WHERE status = 'active' AND ${programFilter}) AS unique_patients,
+       (SELECT count(DISTINCT employee_id)::text FROM chronic_programs WHERE status = 'active' AND ${programFilter}) AS unique_employees,
        (SELECT coalesce(round(avg(EXTRACT(EPOCH FROM (now() - created_at)) / 2592000)::numeric, 1), 0)::text
-          FROM chronic_programs WHERE status = 'active') AS avg_months,
-       (SELECT count(*)::text FROM chronic_programs WHERE dropout_at IS NOT NULL) AS dropouts,
-       (SELECT count(*)::text FROM refill_cycles WHERE period = $1) AS cycles,
-       (SELECT count(*)::text FROM refill_cycles WHERE period = $1 AND status = 'dispensed') AS dispensed`,
-    [period]
+          FROM chronic_programs WHERE status = 'active' AND ${programFilter}) AS avg_months,
+       (SELECT count(*)::text FROM chronic_programs WHERE dropout_at IS NOT NULL AND ${programFilter}) AS dropouts,
+       (SELECT count(*)::text FROM refill_cycles WHERE ${cycleFilter}) AS cycles,
+       (SELECT count(*)::text FROM refill_cycles WHERE ${cycleFilter} AND status = 'dispensed') AS dispensed`,
+    params
   );
   const o = ops.rows[0] || ({} as Record<string, string>);
 
+  const voiceParams: unknown[] = [period];
+  let voiceWhere = 'period = $1';
+  if (!scope.all && scope.companies.length) {
+    voiceParams.push(scope.companies.map((c) => c.toLowerCase()));
+    voiceWhere += ` AND lower(trim(company)) = ANY($${voiceParams.length}::text[])`;
+  }
   const voice = await query<{
     checkins: string;
     helped_yes: string;
@@ -196,8 +222,8 @@ export async function getImpactSummary(period = currentPeriod()): Promise<Impact
        coalesce(round(avg(depth)::numeric, 1), 0)::text AS avg_depth,
        coalesce(round(avg(life)::numeric, 1), 0)::text AS avg_life
      FROM impact_checkins
-     WHERE period = $1`,
-    [period]
+     WHERE ${voiceWhere}`,
+    voiceParams
   );
   const v = voice.rows[0] || ({} as Record<string, string>);
 
@@ -212,10 +238,10 @@ export async function getImpactSummary(period = currentPeriod()): Promise<Impact
   }>(
     `SELECT emp_name, company, helped, depth, life, note, created_at::text
      FROM impact_checkins
-     WHERE period = $1
+     WHERE ${voiceWhere}
      ORDER BY created_at DESC
      LIMIT 12`,
-    [period]
+    voiceParams
   );
 
   const employees = n(o.unique_employees);
@@ -227,6 +253,7 @@ export async function getImpactSummary(period = currentPeriod()): Promise<Impact
 
   return {
     period,
+    org_label: scope.label,
     reach: {
       active_programs: n(o.active_programs),
       unique_patients: n(o.unique_patients),
