@@ -217,6 +217,13 @@ export default function Home() {
               }
             >
               <UnlockPanel />
+              <p className="text-xs text-slate-500">
+                After unlock, open{' '}
+                <Link href="/impact" className="font-semibold text-[#0f6e56] underline">
+                  Beneficiary impact
+                </Link>{' '}
+                to see if the support is helping.
+              </p>
             </Suspense>
           </div>
         </details>

@@ -146,6 +146,42 @@ export default async function ImpactPage({
               </section>
             </div>
 
+            <section className="rounded-2xl border border-white/90 bg-white/90 p-5 shadow-sm space-y-3">
+              <div className="flex flex-wrap items-end justify-between gap-2">
+                <h2 className="aid-display text-xl">Last three months</h2>
+                <p className="text-xs text-slate-500">Is the help getting deeper?</p>
+              </div>
+              {data.trend.length === 0 ? (
+                <p className="text-sm text-slate-500">No check-ins yet. Trend starts after the first answers.</p>
+              ) : (
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {data.trend.map((row) => (
+                    <div key={row.period} className="rounded-xl border border-[#e4ddd2] bg-[#f4f1ea]/50 p-3 space-y-1">
+                      <p className="text-xs font-semibold text-slate-500">{row.period}</p>
+                      <p className="aid-display text-2xl">{row.helped_rate == null ? '—' : `${row.helped_rate}%`}</p>
+                      <p className="text-[11px] text-slate-500">{row.checkins} answers · helped</p>
+                      <p className="text-[11px] text-slate-600">Depth {row.avg_depth ?? '—'} · Life {row.avg_life ?? '—'}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {data.voice.checkins === 0 && (
+              <section className="rounded-2xl border border-[#0f6e56]/20 bg-[#0f6e56]/5 p-5 space-y-2">
+                <h2 className="aid-display text-xl">Ask people to answer</h2>
+                <p className="text-sm text-slate-600">
+                  Reach and delivery already show. Depth and life appear when beneficiaries open My profile and send this month’s check-in.
+                </p>
+                <p className="text-sm text-slate-500" dir="rtl">
+                  اطلب من المستفيد فتح الملف والإجابة على سؤال هذا الشهر.
+                </p>
+                <Link href="/me" className="inline-block aid-cta-primary px-4 py-2 text-sm">
+                  Open profile check-in
+                </Link>
+              </section>
+            )}
+
             <section className="rounded-2xl border border-white/90 bg-white/90 shadow-sm overflow-hidden">
               <div className="px-4 py-3 border-b border-[#e4ddd2] bg-[#f4f1ea]/70 flex justify-between gap-2">
                 <h2 className="aid-display text-lg">Voices this month</h2>

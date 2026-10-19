@@ -149,6 +149,13 @@ export type ImpactSummary = {
     note: string | null;
     created_at: string;
   }>;
+  trend: Array<{
+    period: string;
+    checkins: number;
+    helped_rate: number | null;
+    avg_depth: number | null;
+    avg_life: number | null;
+  }>;
 };
 
 function n(v: unknown) {
@@ -251,6 +258,41 @@ export async function getImpactSummary(
   const helpedYes = n(v.helped_yes);
   const helpedSome = n(v.helped_somewhat);
 
+  const trendRes = await query<{
+    period: string;
+    checkins: string;
+    helped_yes: string;
+    helped_somewhat: string;
+    avg_depth: string;
+    avg_life: string;
+  }>(
+    `SELECT period,
+            count(*)::text AS checkins,
+            count(*) FILTER (WHERE helped = 'yes')::text AS helped_yes,
+            count(*) FILTER (WHERE helped = 'somewhat')::text AS helped_somewhat,
+            coalesce(round(avg(depth)::numeric, 1), 0)::text AS avg_depth,
+            coalesce(round(avg(life)::numeric, 1), 0)::text AS avg_life
+     FROM impact_checkins
+     WHERE ${voiceWhere.replace('period = $1', 'period <= $1')}
+     GROUP BY period
+     ORDER BY period DESC
+     LIMIT 3`,
+    voiceParams
+  );
+  const trend = trendRes.rows
+    .map((row) => {
+      const c = n(row.checkins);
+      const helped = n(row.helped_yes) + n(row.helped_somewhat);
+      return {
+        period: row.period,
+        checkins: c,
+        helped_rate: c ? Math.round((helped / c) * 100) : null,
+        avg_depth: c ? n(row.avg_depth) : null,
+        avg_life: c ? n(row.avg_life) : null,
+      };
+    })
+    .reverse();
+
   return {
     period,
     org_label: scope.label,
@@ -281,5 +323,6 @@ export async function getImpactSummary(
       avg_life: checkins ? n(v.avg_life) : null,
     },
     recent: recent.rows,
+    trend,
   };
 }

@@ -12,10 +12,6 @@ export async function resolveImpactScope(): Promise<ImpactScope> {
   const platform = isValidOpsSecret(secret);
 
   if (status.staff_ok && status.staff_email) {
-    const role = await resolveStaffRole(status.staff_email);
-    if (role.source === 'env_admin' || role.role === 'admin' || role.can_ops) {
-      return { all: true, org_ids: [], companies: [], label: 'All organizations' };
-    }
     const memberships = await listMembershipsForEmail(status.staff_email);
     if (memberships.length) {
       const names = memberships.map((m) => m.org_name);
@@ -26,6 +22,10 @@ export async function resolveImpactScope(): Promise<ImpactScope> {
         companies,
         label: names.join(' · ') || 'Your organization',
       };
+    }
+    const role = await resolveStaffRole(status.staff_email);
+    if (role.source === 'env_admin' || role.role === 'admin' || role.can_ops || platform) {
+      return { all: true, org_ids: [], companies: [], label: 'All organizations' };
     }
   }
 
