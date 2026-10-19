@@ -262,10 +262,10 @@ export default function IntakeOpsPage() {
               key={s.id}
               type="button"
               onClick={() => setStatus(s.id)}
-              className={`min-h-[2.5rem] rounded-full px-3.5 py-1.5 text-xs font-semibold transition ${
+              className={`min-h-[2.5rem] rounded-full px-3.5 py-1.5 text-xs font-semibold border transition ${
                 status === s.id
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'bg-white/90 border border-slate-200 text-slate-600 hover:bg-white'
+                  ? 'bg-[#0f6e56] text-white border-[#0f6e56]'
+                  : 'bg-white/90 border-[#e4ddd2] text-slate-600 hover:bg-white'
               }`}
             >
               {s.label}
@@ -315,6 +315,7 @@ export default function IntakeOpsPage() {
                     {age && <p className="text-[10px] text-slate-400">{age}</p>}
                   </div>
                 </div>
+                <div className="px-4 py-3 space-y-2.5">
                 <p className="text-sm text-slate-600">
                   <span className="text-slate-400">Patient</span> {r.patient_name || '—'}
                 </p>
