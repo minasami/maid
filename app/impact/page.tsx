@@ -168,7 +168,12 @@ export default async function ImpactPage({
               )}
             </section>
 
-            <ImpactAsk period={period} hasVoices={data.voice.checkins > 0} />
+            <ImpactAsk
+              period={period}
+              hasVoices={data.voice.checkins > 0}
+              orgName={data.org_label || scope.label}
+              companyCode={scope.all ? undefined : scope.companies[0]}
+            />
 
             <section className="rounded-2xl border border-white/90 bg-white/90 shadow-sm overflow-hidden">
               <div className="px-4 py-3 border-b border-[#e4ddd2] bg-[#f4f1ea]/70 flex justify-between gap-2">
