@@ -59,6 +59,7 @@ export default function EmployeePortalClient() {
   const [reply, setReply] = useState('');
   const [replyBusy, setReplyBusy] = useState(false);
   const [replyMsg, setReplyMsg] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   const search = useSearchParams();
   useEffect(() => {
@@ -88,6 +89,10 @@ export default function EmployeePortalClient() {
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error || 'Not found');
       setProfile(data.profile);
+      fetch(`/api/orgs/logo?company=${encodeURIComponent(company)}`)
+        .then((r) => r.json())
+        .then((d) => setLogoUrl(d.logo_url || null))
+        .catch(() => setLogoUrl(null));
       saveProfile({
         emp_name: data.profile.emp_name,
         emp_id: empId.trim(),
@@ -260,7 +265,12 @@ export default function EmployeePortalClient() {
                 background: 'var(--aid-surface)',
               }}
             >
-              <div>
+              <div className="flex items-start gap-3">
+                {logoUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={logoUrl} alt="" className="h-12 w-12 rounded-xl border object-contain bg-white" />
+                )}
+                <div>
                 <p className="text-[11px] uppercase tracking-wide" style={{ color: 'var(--aid-muted)' }}>
                   Employee
                 </p>
@@ -271,6 +281,7 @@ export default function EmployeePortalClient() {
                 <p className="text-xs mt-1" style={{ color: 'var(--aid-muted)' }}>
                   Phone {profile.phone_masked}
                 </p>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <Link href={newRequestHref} className="aid-cta-primary py-3 text-center text-sm">

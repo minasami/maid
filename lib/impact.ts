@@ -168,11 +168,12 @@ export type ImpactScope = {
   org_ids: string[];
   companies: string[];
   label: string;
+  logo_url?: string | null;
 };
 
 export async function getImpactSummary(
   period = currentPeriod(),
-  scope: ImpactScope = { all: true, org_ids: [], companies: [], label: 'All organizations' }
+  scope: ImpactScope = { all: true, org_ids: [], companies: [], label: 'All organizations', logo_url: null }
 ): Promise<ImpactSummary> {
   await ensureImpactTables();
 

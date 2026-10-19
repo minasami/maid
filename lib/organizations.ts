@@ -13,6 +13,7 @@ export type Organization = {
   contact_email: string | null;
   contact_phone: string | null;
   country: string | null;
+  logo_url: string | null;
   default_currency: string;
   monthly_cap_egp: number | null;
   created_at: string;
@@ -71,6 +72,7 @@ export async function ensureOrgTables(): Promise<void> {
     `ALTER TABLE organizations ADD COLUMN IF NOT EXISTS country TEXT DEFAULT 'EG'`
   );
   await query(`ALTER TABLE organizations ADD COLUMN IF NOT EXISTS notes TEXT`);
+  await query(`ALTER TABLE organizations ADD COLUMN IF NOT EXISTS logo_url TEXT`);
   await query(
     `ALTER TABLE organizations ADD COLUMN IF NOT EXISTS settings JSONB NOT NULL DEFAULT '{}'::jsonb`
   );
@@ -156,6 +158,35 @@ export async function getOrganizationByCode(
     [code.trim()]
   );
   return r.rows[0] || null;
+}
+
+
+export async function getOrganizationLogo(company: string): Promise<string | null> {
+  await ensureOrgTables();
+  const c = (company || '').trim();
+  if (!c) return null;
+  const r = await query<{ logo_url: string | null }>(
+    `SELECT logo_url FROM organizations
+     WHERE lower(code) = lower($1)
+        OR lower(name) = lower($1)
+        OR lower(coalesce(slug,'')) = lower($1)
+     LIMIT 1`,
+    [c]
+  );
+  return r.rows[0]?.logo_url || null;
+}
+
+export async function setOrganizationLogo(code: string, logoUrl: string | null): Promise<void> {
+  await ensureOrgTables();
+  const value = logoUrl && logoUrl.trim() ? logoUrl.trim() : null;
+  if (value && value.length > 400_000) {
+    throw new Error('Logo is too large. Use a smaller image or a URL.');
+  }
+  await query(
+    `UPDATE organizations SET logo_url = $2, updated_at = now()
+     WHERE lower(code) = lower($1)`,
+    [code.trim(), value]
+  );
 }
 
 export type RegisterOrgInput = {

@@ -3,6 +3,7 @@ import { FlowSteps } from '../FlowSteps';
 import { getImpactSummary } from '@/lib/impact';
 import { resolveImpactScope } from '@/lib/impactScope';
 import { ImpactAsk } from './ImpactAsk';
+import { OrgLogo } from './OrgLogo';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,7 +55,12 @@ export default async function ImpactPage({
         <header className="space-y-3">
           <FlowSteps current={5} />
           <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
+            <div className="space-y-3">
+              <OrgLogo
+                code={scope.all ? undefined : scope.companies[0]}
+                name={data?.org_label || scope.label}
+                logoUrl={scope.logo_url}
+              />
               <p className="aid-section-label">Organization dashboard · لوحة الأثر</p>
               <h1 className="aid-display text-3xl sm:text-4xl">Beneficiary impact</h1>
               <p className="text-sm text-slate-600">
