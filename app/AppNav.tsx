@@ -29,6 +29,7 @@ const OPS_MORE = [
   { href: '/dry-run', label: 'Dry-run' },
   { href: '/eva-split', label: 'EVA split' },
   { href: '/formulary', label: 'Formulary' },
+  { href: '/impact', label: 'Impact' },
   { href: '/reports', label: 'Reports' },
   { href: '/status', label: 'System status' },
 ];
@@ -44,6 +45,7 @@ const STAFF_PATHS = [
   '/dry-run',
   '/eva-split',
   '/formulary',
+  '/impact',
   '/reports',
   '/inventory',
   '/ocr',

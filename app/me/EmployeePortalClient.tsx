@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { ImpactCheckin } from './ImpactCheckin';
 import { SearchablePicker } from '@/components/SearchablePicker';
 import { COMPANY_OPTIONS } from '@/lib/optionLists';
 import { loadProfile, saveProfile } from '@/lib/intakeDraft';
@@ -345,6 +346,8 @@ export default function EmployeePortalClient() {
                 </ul>
               )}
             </section>
+
+            <ImpactCheckin company={company} empId={empId} phone={phone} />
 
             {profile.requests.length > 0 && (
               <div className="space-y-3">
