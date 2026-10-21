@@ -327,3 +327,48 @@ export async function getImpactSummary(
     trend,
   };
 }
+
+
+export type OrgImpactCard = {
+  code: string;
+  name: string;
+  logo_url: string | null;
+  active_programs: number;
+  unique_patients: number;
+  checkins: number;
+};
+
+/** One card per active organization, for the platform view. */
+export async function getOrgImpactCards(period = currentPeriod()): Promise<OrgImpactCard[]> {
+  await ensureImpactTables();
+  const rows = await query<{
+    code: string;
+    name: string;
+    logo_url: string | null;
+    active_programs: string;
+    unique_patients: string;
+    checkins: string;
+  }>(
+    `SELECT o.code, o.name, o.logo_url,
+            (SELECT count(*)::text FROM chronic_programs p
+              WHERE p.org_id = o.id AND p.status = 'active') AS active_programs,
+            (SELECT count(DISTINCT p.dependent_id)::text FROM chronic_programs p
+              WHERE p.org_id = o.id AND p.status = 'active') AS unique_patients,
+            (SELECT count(*)::text FROM impact_checkins c
+              WHERE c.period = $1
+                AND (lower(trim(c.company)) = lower(o.code)
+                  OR lower(trim(c.company)) = lower(o.name))) AS checkins
+     FROM organizations o
+     WHERE coalesce(o.status, 'active') = 'active'
+     ORDER BY o.name`,
+    [period]
+  );
+  return rows.rows.map((r) => ({
+    code: r.code,
+    name: r.name,
+    logo_url: r.logo_url,
+    active_programs: n(r.active_programs),
+    unique_patients: n(r.unique_patients),
+    checkins: n(r.checkins),
+  }));
+}

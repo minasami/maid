@@ -126,11 +126,20 @@ export default function OrgRegisterPage() {
             <p className="font-semibold">{pending ? 'Pending review' : 'Ready'}</p>
             <p className="text-sm">{result.message}</p>
             {result.org && (
-              <p className="text-xs font-mono">
-                {result.org.code} · {result.org.slug}
-              </p>
+              <div className="flex items-center gap-3">
+                {logoUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={logoUrl} alt="" className="h-12 w-12 rounded-xl border bg-white object-contain" />
+                )}
+                <p className="text-xs font-mono">
+                  {result.org.code} · {result.org.slug}
+                </p>
+              </div>
             )}
             <div className="flex flex-wrap gap-3 text-sm">
+              <Link href="/impact" className="font-semibold underline" style={{ color: 'var(--aid-emerald)' }}>
+                Beneficiary impact
+              </Link>
               <Link href="/sign-in" className="font-semibold underline" style={{ color: 'var(--aid-emerald)' }}>
                 Staff sign-in
               </Link>

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { FlowSteps } from '../FlowSteps';
-import { getImpactSummary } from '@/lib/impact';
+import { getImpactSummary, getOrgImpactCards } from '@/lib/impact';
 import { resolveImpactScope } from '@/lib/impactScope';
 import { ImpactAsk } from './ImpactAsk';
 import { OrgLogo } from './OrgLogo';
@@ -34,8 +34,10 @@ export default async function ImpactPage({
   const scope = await resolveImpactScope();
   let data = null as Awaited<ReturnType<typeof getImpactSummary>> | null;
   let error: string | null = null;
+  let cardsByOrg: Awaited<ReturnType<typeof getOrgImpactCards>> = [];
   try {
     data = await getImpactSummary(period, scope);
+    if (scope.all) cardsByOrg = await getOrgImpactCards(period);
   } catch (e: unknown) {
     error = e instanceof Error ? e.message : 'Could not load impact';
   }
@@ -81,6 +83,31 @@ export default async function ImpactPage({
           <input type="month" name="period" defaultValue={period} className="rounded-xl border border-[#e4ddd2] px-3 py-2 text-sm" />
           <button type="submit" className="aid-cta-primary px-4 py-2 text-sm">Show</button>
         </form>
+
+        {scope.all && cardsByOrg.length > 0 && (
+          <section className="space-y-2">
+            <h2 className="aid-display text-xl">By organization</h2>
+            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {cardsByOrg.map((org) => (
+                <div key={org.code} className="rounded-2xl border border-white/90 bg-white/90 p-4 shadow-sm flex items-center gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e4ddd2] bg-white">
+                    {org.logo_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={org.logo_url} alt="" className="h-full w-full object-contain" />
+                    ) : (
+                      <span className="text-sm font-bold text-[#0f6e56]">{org.name.slice(0, 1)}</span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold truncate">{org.name}</p>
+                    <p className="text-xs text-slate-500">{org.unique_patients} people · {org.active_programs} programs</p>
+                    <p className="text-xs text-slate-400">{org.checkins} answers this month</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {error && (
           <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">{error}</div>
