@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 type OrgStat = {
+  logo_url?: string | null;
   code: string;
   name: string;
   status: string;
@@ -30,9 +31,10 @@ export function OrgsListPanel() {
           if (!r2.ok) throw new Error(d2.error || data.error || 'Unauthorized');
           setStats(
             (d2.organizations || []).map(
-              (o: { code: string; name: string; status?: string }) => ({
+              (o: { code: string; name: string; status?: string; logo_url?: string | null }) => ({
                 code: o.code,
                 name: o.name,
+                logo_url: o.logo_url,
                 status: o.status || 'active',
                 members: 0,
                 requests: 0,
@@ -84,6 +86,10 @@ export function OrgsListPanel() {
         {stats.map((o) => (
           <li key={o.code} className="py-2.5 space-y-1">
             <div className="flex flex-wrap items-center gap-2">
+              {o.logo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={o.logo_url} alt="" className="h-7 w-7 rounded-md border object-contain bg-white" />
+              ) : null}
               <span className="font-mono font-semibold text-slate-800">{o.code}</span>
               <span className="text-slate-700">{o.name}</span>
               <span

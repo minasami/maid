@@ -13,11 +13,13 @@ export function ImpactAsk({
   hasVoices,
   orgName,
   companyCode,
+  logoUrl,
 }: {
   period: string;
   hasVoices: boolean;
   orgName: string;
   companyCode?: string;
+  logoUrl?: string | null;
 }) {
   const [copied, setCopied] = useState(false);
   const [phone, setPhone] = useState('');
@@ -48,11 +50,17 @@ export function ImpactAsk({
   return (
     <section className="rounded-2xl border border-[#0f6e56]/20 bg-[#0f6e56]/5 p-5 space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
-        <div>
+        <div className="flex items-start gap-3">
+          {logoUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoUrl} alt="" className="h-12 w-12 rounded-xl border border-[#e4ddd2] bg-white object-contain" />
+          )}
+          <div>
           <h2 className="aid-display text-xl">{hasVoices ? 'Ask for more answers' : 'Ask people to answer'}</h2>
           <p className="text-sm text-slate-600 mt-1">
             From <strong>{name}</strong>. Open WhatsApp with this message, or copy it. Period {period}.
           </p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           <a

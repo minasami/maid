@@ -179,6 +179,7 @@ export default async function ImpactPage({
               hasVoices={data.voice.checkins > 0}
               orgName={data.org_label || scope.label}
               companyCode={scope.all ? undefined : scope.companies[0]}
+              logoUrl={scope.logo_url}
             />
 
             <section className="rounded-2xl border border-white/90 bg-white/90 shadow-sm overflow-hidden">

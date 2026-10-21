@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
       status: string;
       members: string;
     }>(
-      `SELECT o.code, o.name, coalesce(o.status,'active') AS status,
+      `SELECT o.code, o.name, o.logo_url, coalesce(o.status,'active') AS status,
               (SELECT count(*)::text FROM org_members m
                WHERE m.org_id = o.id AND m.active = true) AS members
        FROM organizations o

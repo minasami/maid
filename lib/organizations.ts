@@ -132,11 +132,11 @@ export async function ensureOrgTables(): Promise<void> {
 }
 
 export async function listActiveOrganizations(): Promise<
-  { code: string; name: string; slug: string }[]
+  { code: string; name: string; slug: string; logo_url: string | null }[]
 > {
   await ensureOrgTables();
-  const r = await query<{ code: string; name: string; slug: string }>(
-    `SELECT code, name, coalesce(slug, lower(code)) AS slug
+  const r = await query<{ code: string; name: string; slug: string; logo_url: string | null }>(
+    `SELECT code, name, coalesce(slug, lower(code)) AS slug, logo_url
      FROM organizations
      WHERE coalesce(status, 'active') = 'active'
      ORDER BY name`

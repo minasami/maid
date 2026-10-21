@@ -20,8 +20,13 @@ export function ImpactCheckin({
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    fetch(`/api/orgs/logo?company=${encodeURIComponent(company)}`)
+      .then((r) => r.json())
+      .then((d) => setLogoUrl(d.logo_url || null))
+      .catch(() => setLogoUrl(null));
     const q = new URLSearchParams({ company, emp_id: empId, phone });
     fetch(`/api/employee/impact?${q}`)
       .then((r) => r.json())
@@ -71,7 +76,12 @@ export function ImpactCheckin({
       className="rounded-2xl border p-5 space-y-4 shadow-sm"
       style={{ borderColor: 'var(--aid-line)', background: 'var(--aid-surface)' }}
     >
-      <div>
+      <div className="flex items-start gap-3">
+        {logoUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={logoUrl} alt="" className="h-12 w-12 rounded-xl border object-contain bg-white" />
+        )}
+        <div>
         <p className="aid-section-label">This month · هذا الشهر</p>
         <h2 className="aid-display text-xl">Did the support help?</h2>
         <p className="text-sm mt-1" style={{ color: 'var(--aid-muted)' }}>
@@ -80,6 +90,7 @@ export function ImpactCheckin({
         <p className="text-sm" style={{ color: 'var(--aid-muted)' }} dir="rtl">
           المؤسسة ترى المجموع فقط. إجابة واحدة في الشهر.
         </p>
+        </div>
       </div>
 
       <form onSubmit={submit} className="space-y-4">
