@@ -6,6 +6,7 @@ import { UnlockPanel } from './UnlockPanel';
 import { GetAppButton } from './GetAppButton';
 import { HomeContinuity } from './HomeContinuity';
 import { HomeFaq } from './HomeFaq';
+import { PartnerLogos } from './PartnerLogos';
 
 export default function Home() {
   return (
@@ -188,6 +189,7 @@ export default function Home() {
         </section>
 
         <section className="space-y-2">
+          <PartnerLogos />
           <Link
             href="/org/register"
             className="block rounded-2xl border border-dashed border-emerald-200/80 bg-white/70 px-4 py-3.5 text-center text-sm font-medium text-emerald-900 hover:bg-emerald-50/80 transition"

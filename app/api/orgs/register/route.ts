@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
         ? Number(body.employee_count_est)
         : undefined,
       message: body.message ? String(body.message) : undefined,
+      logo_url: body.logo_url ? String(body.logo_url) : undefined,
       auto_activate: body.auto_activate !== false,
     });
     if (!result.ok) {

@@ -11,6 +11,7 @@ export default function OrgRegisterPage() {
   const [contact_phone, setContactPhone] = useState('');
   const [employee_count_est, setEmpCount] = useState('');
   const [message, setMessage] = useState('');
+  const [logoUrl, setLogoUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{
@@ -38,6 +39,7 @@ export default function OrgRegisterPage() {
             ? Number(employee_count_est)
             : undefined,
           message: message || undefined,
+          logo_url: logoUrl || undefined,
         }),
       });
       const data = await res.json();
@@ -143,6 +145,40 @@ export default function OrgRegisterPage() {
             className="rounded-2xl border p-5 shadow-sm space-y-4"
             style={{ background: 'var(--aid-surface)', borderColor: 'var(--aid-line)' }}
           >
+            <label className="block space-y-1.5">
+              <span className="text-sm font-medium">Company logo · شعار الشركة</span>
+              <input
+                type="file"
+                accept="image/*"
+                className="aid-input text-sm"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const img = new Image();
+                  const url = URL.createObjectURL(file);
+                  img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 160;
+                    canvas.height = 160;
+                    const ctx = canvas.getContext('2d');
+                    if (!ctx) return;
+                    const scale = Math.min(160 / img.width, 160 / img.height);
+                    const w = img.width * scale;
+                    const h = img.height * scale;
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(0, 0, 160, 160);
+                    ctx.drawImage(img, (160 - w) / 2, (160 - h) / 2, w, h);
+                    URL.revokeObjectURL(url);
+                    setLogoUrl(canvas.toDataURL('image/jpeg', 0.82));
+                  };
+                  img.src = url;
+                }}
+              />
+              {logoUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt="" className="h-14 w-14 rounded-xl border object-contain bg-white" />
+              )}
+            </label>
             <label className="block space-y-1.5">
               <span className="text-sm font-medium">Organization name · اسم المؤسسة</span>
               <input

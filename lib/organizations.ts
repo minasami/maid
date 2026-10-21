@@ -198,6 +198,7 @@ export type RegisterOrgInput = {
   country?: string;
   employee_count_est?: number;
   message?: string;
+  logo_url?: string | null;
   /** When true (default), create org as active immediately */
   auto_activate?: boolean;
 };
@@ -281,8 +282,8 @@ export async function registerOrganization(
 
   const ins = await query<{ id: string }>(
     `INSERT INTO organizations (
-       code, name, slug, status, contact_name, contact_email, contact_phone, country
-     ) VALUES ($1,$2,$3,'active',$4,$5,$6,$7)
+       code, name, slug, status, contact_name, contact_email, contact_phone, country, logo_url
+     ) VALUES ($1,$2,$3,'active',$4,$5,$6,$7,$8)
      RETURNING id::text`,
     [
       code,
@@ -292,6 +293,7 @@ export async function registerOrganization(
       contact_email,
       input.contact_phone?.trim() || null,
       input.country?.trim() || 'EG',
+      input.logo_url && input.logo_url.length < 400_000 ? input.logo_url : null,
     ]
   );
   const orgId = ins.rows[0]?.id;
