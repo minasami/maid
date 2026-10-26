@@ -295,3 +295,18 @@ h2,
     filter: none;
   }
 }
+
+
+@media print {
+  .aid-nav,
+  footer,
+  .print\:hidden {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+}

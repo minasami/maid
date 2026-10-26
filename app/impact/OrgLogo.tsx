@@ -74,7 +74,7 @@ export function OrgLogo({
           <span className="text-lg font-bold text-[#0f6e56]">{(name || 'O').slice(0, 1)}</span>
         )}
       </div>
-      <div className="space-y-1">
+      <div className="space-y-1 print:hidden">
           {!code && (
             <input
               value={codeInput}

@@ -56,7 +56,7 @@ export default async function ImpactPage({
     <main className="min-h-screen p-4 sm:p-6 text-slate-900 pb-28 md:pb-16 print:p-0 print:pb-0">
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="space-y-3">
-          <FlowSteps current={5} />
+          <div className="print:hidden"><FlowSteps current={5} /></div>
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="space-y-3">
               <OrgLogo
@@ -72,8 +72,9 @@ export default async function ImpactPage({
               <p className="text-sm text-slate-500" dir="rtl">
                 هل الدعم يصل؟ وهل يغيّر الاحتياج وجودة الحياة؟
               </p>
+              <p className="text-sm font-medium text-slate-700">{period}</p>
             </div>
-            <div className="flex flex-col items-end gap-1">
+            <div className="flex flex-col items-end gap-1 print:hidden">
               {!scope.all && searchParams.org && (
                 <Link href={`/impact?period=${encodeURIComponent(period)}`} className="text-sm font-semibold text-[#0f6e56] hover:underline">
                   All organizations
@@ -87,7 +88,7 @@ export default async function ImpactPage({
           </div>
         </header>
 
-        <form method="get" className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm">
+        <form method="get" className="print:hidden flex flex-wrap items-center gap-2 rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm">
           <label className="text-sm font-medium">Month</label>
           <input type="month" name="period" defaultValue={period} className="rounded-xl border border-[#e4ddd2] px-3 py-2 text-sm" />
           {searchParams.org && <input type="hidden" name="org" value={searchParams.org} />}
@@ -215,6 +216,7 @@ export default async function ImpactPage({
               )}
             </section>
 
+            <div className="print:hidden">
             <ImpactAsk
               period={period}
               hasVoices={data.voice.checkins > 0}
@@ -223,6 +225,7 @@ export default async function ImpactPage({
               logoUrl={scope.logo_url}
               orgCode={searchParams.org}
             />
+            </div>
 
             <section className="rounded-2xl border border-white/90 bg-white/90 shadow-sm overflow-hidden">
               <div className="px-4 py-3 border-b border-[#e4ddd2] bg-[#f4f1ea]/70 flex justify-between gap-2">
