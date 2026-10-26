@@ -4,6 +4,7 @@ import { getImpactSummary, getOrgImpactCards } from '@/lib/impact';
 import { resolveImpactScope } from '@/lib/impactScope';
 import { ImpactAsk } from './ImpactAsk';
 import { OrgLogo } from './OrgLogo';
+import { PrintButton } from './PrintButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +53,7 @@ export default async function ImpactPage({
     : [];
 
   return (
-    <main className="min-h-screen p-4 sm:p-6 text-slate-900 pb-28 md:pb-16">
+    <main className="min-h-screen p-4 sm:p-6 text-slate-900 pb-28 md:pb-16 print:p-0 print:pb-0">
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="space-y-3">
           <FlowSteps current={5} />
@@ -81,6 +82,7 @@ export default async function ImpactPage({
               <Link href="/me" className="text-sm font-semibold text-[#0f6e56] hover:underline">
                 How people answer →
               </Link>
+              <PrintButton />
             </div>
           </div>
         </header>
@@ -219,6 +221,7 @@ export default async function ImpactPage({
               orgName={data.org_label || scope.label}
               companyCode={scope.all ? undefined : scope.companies[0]}
               logoUrl={scope.logo_url}
+              orgCode={searchParams.org}
             />
 
             <section className="rounded-2xl border border-white/90 bg-white/90 shadow-sm overflow-hidden">

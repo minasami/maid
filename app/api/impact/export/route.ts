@@ -14,7 +14,8 @@ export async function GET(req: NextRequest) {
   try {
     await ensureImpactTables();
     const period = req.nextUrl.searchParams.get('period') || '';
-    const scope = await resolveImpactScope();
+    const org = req.nextUrl.searchParams.get('org') || '';
+    const scope = await resolveImpactScope(org || undefined);
     const params: unknown[] = [];
     const where: string[] = [];
     if (period) {
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
     const lines = [header.join(',')].concat(
       rows.rows.map((r) => header.map((h) => csvCell(r[h])).join(','))
     );
-    const filename = `impact-${period || 'all'}.csv`;
+    const filename = `impact-${org || 'all'}-${period || 'all'}.csv`;
     return new NextResponse(lines.join('\n'), {
       headers: {
         'Content-Type': 'text/csv; charset=utf-8',

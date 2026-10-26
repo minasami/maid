@@ -14,12 +14,14 @@ export function ImpactAsk({
   orgName,
   companyCode,
   logoUrl,
+  orgCode,
 }: {
   period: string;
   hasVoices: boolean;
   orgName: string;
   companyCode?: string;
   logoUrl?: string | null;
+  orgCode?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const [phone, setPhone] = useState('');
@@ -75,7 +77,7 @@ export function ImpactAsk({
             {copied ? 'Copied' : 'Copy'}
           </button>
           <a
-            href={`/api/impact/export?period=${encodeURIComponent(period)}`}
+            href={`/api/impact/export?period=${encodeURIComponent(period)}${orgCode ? `&org=${encodeURIComponent(orgCode)}` : ""}`}
             className="rounded-xl border border-[#e4ddd2] bg-white px-4 py-2 text-sm font-medium text-slate-700"
           >
             CSV
