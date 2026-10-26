@@ -151,7 +151,7 @@ export async function getOrganizationByCode(
   const r = await query<Organization>(
     `SELECT id::text, code, name, coalesce(slug, lower(code)) AS slug,
             coalesce(status, 'active') AS status,
-            contact_name, contact_email, contact_phone, country,
+            contact_name, contact_email, contact_phone, country, logo_url,
             default_currency, monthly_cap_egp::float8 AS monthly_cap_egp,
             created_at::text
      FROM organizations WHERE lower(code) = lower($1) LIMIT 1`,
