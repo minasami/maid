@@ -2,11 +2,11 @@ import { cookies } from 'next/headers';
 import { ADMIN_COOKIE, isValidOpsSecret } from '@/lib/auth';
 import { staffAccessStatus } from '@/lib/staffAccess';
 import { resolveStaffRole } from '@/lib/staffRoles';
-import { getOrganizationLogo, listMembershipsForEmail } from '@/lib/organizations';
+import { getOrganizationByCode, getOrganizationLogo, listMembershipsForEmail } from '@/lib/organizations';
 import type { ImpactScope } from '@/lib/impact';
 
 /** Who is looking: their org, or all orgs for platform staff. */
-export async function resolveImpactScope(): Promise<ImpactScope> {
+export async function resolveImpactScope(orgCode?: string): Promise<ImpactScope> {
   const status = staffAccessStatus();
   const secret = cookies().get(ADMIN_COOKIE)?.value;
   const platform = isValidOpsSecret(secret);
@@ -31,7 +31,21 @@ export async function resolveImpactScope(): Promise<ImpactScope> {
     }
   }
 
-  if (platform) {
+  const canAll = platform || (status.staff_ok && status.staff_email);
+  if (orgCode && canAll) {
+    const org = await getOrganizationByCode(orgCode);
+    if (org) {
+      return {
+        all: false,
+        org_ids: [org.id],
+        companies: [org.code, org.name],
+        label: org.name,
+        logo_url: org.logo_url || (await getOrganizationLogo(org.code)),
+      };
+    }
+  }
+
+  if (platform || canAll) {
     return { all: true, org_ids: [], companies: [], label: 'All organizations', logo_url: null };
   }
 

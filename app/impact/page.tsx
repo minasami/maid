@@ -28,10 +28,10 @@ function Bar({ value, max = 5 }: { value: number | null; max?: number }) {
 export default async function ImpactPage({
   searchParams,
 }: {
-  searchParams: { period?: string };
+  searchParams: { period?: string; org?: string };
 }) {
   const period = searchParams.period || defaultPeriod();
-  const scope = await resolveImpactScope();
+  const scope = await resolveImpactScope(searchParams.org);
   let data = null as Awaited<ReturnType<typeof getImpactSummary>> | null;
   let error: string | null = null;
   let cardsByOrg: Awaited<ReturnType<typeof getOrgImpactCards>> = [];
@@ -72,15 +72,23 @@ export default async function ImpactPage({
                 هل الدعم يصل؟ وهل يغيّر الاحتياج وجودة الحياة؟
               </p>
             </div>
-            <Link href="/me" className="text-sm font-semibold text-[#0f6e56] hover:underline">
-              How people answer →
-            </Link>
+            <div className="flex flex-col items-end gap-1">
+              {!scope.all && searchParams.org && (
+                <Link href={`/impact?period=${encodeURIComponent(period)}`} className="text-sm font-semibold text-[#0f6e56] hover:underline">
+                  All organizations
+                </Link>
+              )}
+              <Link href="/me" className="text-sm font-semibold text-[#0f6e56] hover:underline">
+                How people answer →
+              </Link>
+            </div>
           </div>
         </header>
 
         <form method="get" className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm">
           <label className="text-sm font-medium">Month</label>
           <input type="month" name="period" defaultValue={period} className="rounded-xl border border-[#e4ddd2] px-3 py-2 text-sm" />
+          {searchParams.org && <input type="hidden" name="org" value={searchParams.org} />}
           <button type="submit" className="aid-cta-primary px-4 py-2 text-sm">Show</button>
         </form>
 
@@ -89,7 +97,11 @@ export default async function ImpactPage({
             <h2 className="aid-display text-xl">By organization</h2>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {cardsByOrg.map((org) => (
-                <div key={org.code} className="rounded-2xl border border-white/90 bg-white/90 p-4 shadow-sm flex items-center gap-3">
+                <Link
+                  key={org.code}
+                  href={`/impact?period=${encodeURIComponent(period)}&org=${encodeURIComponent(org.code)}`}
+                  className="rounded-2xl border border-white/90 bg-white/90 p-4 shadow-sm flex items-center gap-3 hover:border-[#0f6e56]/40"
+                >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#e4ddd2] bg-white">
                     {org.logo_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -103,7 +115,7 @@ export default async function ImpactPage({
                     <p className="text-xs text-slate-500">{org.unique_patients} people · {org.active_programs} programs</p>
                     <p className="text-xs text-slate-400">{org.checkins} answers this month</p>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </section>
