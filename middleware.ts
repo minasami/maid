@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createHmac, timingSafeEqual } from 'crypto';
+import { createNeonAuth } from '@neondatabase/auth/next/server';
 
 const ADMIN_COOKIE = 'maa_admin';
 const STAFF_COOKIE = 'maa_ops_staff';
+const SESSION_VERIFIER = 'neon_auth_session_verifier';
 
 const PUBLIC_EXACT = new Set([
   '/',
@@ -107,7 +109,27 @@ function hasOpsAuth(req: NextRequest, secrets: string[]): boolean {
   return false;
 }
 
-export function middleware(req: NextRequest) {
+/**
+ * Google returns to callbackURL with neon_auth_session_verifier.
+ * Neon Auth middleware exchanges that plus the challenge cookie for the session cookie.
+ * Only run it when the verifier is present so public pages stay public.
+ */
+function exchangeNeonSession(req: NextRequest) {
+  const base = process.env.NEON_AUTH_BASE_URL;
+  const secret = process.env.NEON_AUTH_COOKIE_SECRET;
+  if (!base || !secret || secret.length < 32) return null;
+  if (!req.nextUrl.searchParams.has(SESSION_VERIFIER)) return null;
+  const auth = createNeonAuth({
+    baseUrl: base,
+    cookies: { secret },
+  });
+  return auth.middleware({ loginUrl: '/sign-in' })(req);
+}
+
+export async function middleware(req: NextRequest) {
+  const exchanged = exchangeNeonSession(req);
+  if (exchanged) return exchanged;
+
   const { pathname } = req.nextUrl;
 
   if (isPublicPath(pathname)) {

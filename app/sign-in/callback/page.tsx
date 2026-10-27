@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { createAuthClient } from '@neondatabase/auth/next';
 
 function CallbackInner() {
   const search = useSearchParams();
@@ -17,6 +18,10 @@ function CallbackInner() {
 
     (async () => {
       try {
+        // Exchange neon_auth_session_verifier (if middleware did not already).
+        const client = createAuthClient();
+        await client.getSession().catch(() => null);
+
         const res = await fetch('/api/auth/staff-session', {
           method: 'POST',
           credentials: 'include',
