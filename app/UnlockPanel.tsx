@@ -42,6 +42,13 @@ const OPS_CHECKLIST = [
     href: '/refills',
     hint: 'Monthly cycle · approve',
   },
+  {
+    n: 6,
+    title: 'Impact',
+    titleAr: 'الأثر',
+    href: '/impact',
+    hint: 'Reach, delivery, and what people say',
+  },
 ];
 
 const cred: RequestInit = { credentials: 'include' };
@@ -108,6 +115,12 @@ export function UnlockPanel() {
   }
 
   async function lock() {
+    try {
+      const { createAuthClient } = await import('@neondatabase/auth/next');
+      await createAuthClient().signOut?.();
+    } catch {
+      /* session may already be gone */
+    }
     await fetch('/api/auth/unlock', { method: 'DELETE', credentials: 'include' });
     try {
       await fetch('/api/auth/staff-session', { method: 'DELETE', credentials: 'include' });

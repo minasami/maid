@@ -54,7 +54,7 @@ export function AdminGoogleAuth({
           : '/';
       const { error } = await client.signIn.social({
         provider: 'google',
-        callbackURL: `${window.location.origin}/sign-in/callback?next=${encodeURIComponent(next)}`,
+        callbackURL: `/sign-in/callback?next=${encodeURIComponent(next)}`,
       });
       if (error) throw new Error(error.message || 'Google sign-in failed');
     } catch (e: unknown) {

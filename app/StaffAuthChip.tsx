@@ -47,7 +47,7 @@ export function StaffAuthChip() {
       const next = pathname.startsWith('/') ? pathname : '/';
       const { error } = await client.signIn.social({
         provider: 'google',
-        callbackURL: `${window.location.origin}/sign-in/callback?next=${encodeURIComponent(next)}`,
+        callbackURL: `/sign-in/callback?next=${encodeURIComponent(next)}`,
       });
       if (error) throw new Error(error.message || 'Failed');
     } catch (e: unknown) {
@@ -79,6 +79,8 @@ export function StaffAuthChip() {
   async function signOut() {
     setLoading(true);
     try {
+      const { createAuthClient } = await import('@neondatabase/auth/next');
+      await createAuthClient().signOut?.();
       await fetch('/api/auth/staff-session', { ...cred, method: 'DELETE' });
       setEmail(null);
       setOrgScope(null);
