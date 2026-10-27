@@ -73,6 +73,13 @@ export default async function ImpactPage({
                 هل الدعم يصل؟ وهل يغيّر الاحتياج وجودة الحياة؟
               </p>
               <p className="text-sm font-medium text-slate-700">{period}</p>
+              {data && (
+                <p className="text-sm text-slate-800">
+                  {data.reach.unique_patients} people reached · {data.continuity.avg_months_on_program} months average ·{' '}
+                  {data.delivery.delivery_rate == null ? 'no deliveries yet' : `${data.delivery.delivery_rate}% delivered`} ·{' '}
+                  {data.voice.helped_rate == null ? 'no answers yet' : `${data.voice.helped_rate}% said it helped`}.
+                </p>
+              )}
             </div>
             <div className="flex flex-col items-end gap-1 print:hidden">
               {!scope.all && searchParams.org && (
@@ -241,7 +248,7 @@ export default async function ImpactPage({
                   {data.recent.map((row, i) => (
                     <li key={`${row.created_at}-${i}`} className="px-4 py-3 flex flex-wrap justify-between gap-2 text-sm">
                       <div className="min-w-0">
-                        <p className="font-medium">{row.emp_name || 'Employee'}</p>
+                        <p className="font-medium print:hidden">{row.emp_name || 'Employee'}</p>
                         <p className="text-xs text-slate-500 capitalize">{row.company} · {row.helped}</p>
                         {row.note && <p className="text-xs text-slate-600 mt-1">{row.note}</p>}
                       </div>
