@@ -14,8 +14,9 @@ export function GoogleSignInButton({ nextPath }: { nextPath: string }) {
       const client = createAuthClient();
       const { error } = await client.signIn.social({
         provider: 'google',
-        callbackURL: `${window.location.origin}/sign-in/callback?next=${encodeURIComponent(nextPath)}`,
+        callbackURL: `/sign-in/callback?next=${encodeURIComponent(nextPath)}`,
       });
+
       if (error) throw new Error(error.message || 'Google sign-in failed');
     } catch (e: unknown) {
       setMsg(e instanceof Error ? e.message : 'Error');

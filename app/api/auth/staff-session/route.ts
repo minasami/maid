@@ -75,15 +75,21 @@ export async function POST(req: NextRequest) {
 
   const { data: session, error } = await auth.getSession();
   if (error || !session?.user?.email) {
+    const cookieNames = req.cookies
+      .getAll()
+      .map((c) => c.name)
+      .filter((name) => name.includes('neon') || name.includes('staff') || name.includes('maa_'));
     return NextResponse.json(
       {
         ok: false,
         error: 'No Neon Auth session — sign in with Google first',
         detail: error?.message,
+        cookies: cookieNames.join(', ') || 'none',
       },
       { status: 401 }
     );
   }
+
 
   const email = String(session.user.email);
   const roleInfo = await resolveStaffRole(email);
