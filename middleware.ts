@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createHmac, timingSafeEqual } from 'crypto';
 
 const ADMIN_COOKIE = 'maa_admin';
 const STAFF_COOKIE = 'maa_ops_staff';
@@ -71,31 +70,46 @@ function signingKey(): string {
   );
 }
 
-/** HMAC only — allowlist/role enforced when cookie was minted */
-function verifyStaffToken(token: string | undefined): boolean {
+function bytesToBase64Url(bytes: Uint8Array): string {
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+}
+
+/** Edge-safe HMAC. Allowlist/role was enforced when the cookie was minted. */
+async function verifyStaffToken(token: string | undefined): Promise<boolean> {
   if (!token || !token.includes('.')) return false;
   const [payload, sig] = token.split('.');
   if (!payload || !sig) return false;
-  const expected = createHmac('sha256', signingKey())
-    .update(payload)
-    .digest('base64url');
   try {
-    const a = Buffer.from(sig);
-    const b = Buffer.from(expected);
-    if (a.length !== b.length || !timingSafeEqual(a, b)) return false;
-  } catch {
-    return false;
-  }
-  try {
-    const email = Buffer.from(payload, 'base64url').toString('utf8');
+    const key = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(signingKey()),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    const mac = await crypto.subtle.sign(
+      'HMAC',
+      key,
+      new TextEncoder().encode(payload)
+    );
+    const expected = bytesToBase64Url(new Uint8Array(mac));
+    if (expected.length !== sig.length) return false;
+    let diff = 0;
+    for (let i = 0; i < expected.length; i++) {
+      diff |= expected.charCodeAt(i) ^ sig.charCodeAt(i);
+    }
+    if (diff !== 0) return false;
+    const email = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
     return email.includes('@');
   } catch {
     return false;
   }
 }
 
-function hasOpsAuth(req: NextRequest, secrets: string[]): boolean {
-  if (verifyStaffToken(req.cookies.get(STAFF_COOKIE)?.value)) return true;
+async function hasOpsAuth(req: NextRequest, secrets: string[]): Promise<boolean> {
+  if (await verifyStaffToken(req.cookies.get(STAFF_COOKIE)?.value)) return true;
 
   const candidates = [
     req.headers.get('x-process-secret'),
@@ -107,7 +121,7 @@ function hasOpsAuth(req: NextRequest, secrets: string[]): boolean {
   return false;
 }
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (isPublicPath(pathname)) {
@@ -136,7 +150,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (hasOpsAuth(req, secrets)) {
+  if (await hasOpsAuth(req, secrets)) {
     return NextResponse.next();
   }
 
