@@ -214,22 +214,21 @@ export default async function ImpactPage({
             <section className="rounded-2xl border border-white/90 bg-white/90 p-5 shadow-sm space-y-3">
               <div className="flex flex-wrap items-end justify-between gap-2">
                 <h2 className="aid-display text-xl">Last three months</h2>
-                <p className="text-xs text-slate-500">Is the help getting deeper?</p>
+                <p className="text-xs text-slate-500">Delivery and whether people said it helped</p>
               </div>
-              {data.trend.length === 0 ? (
-                <p className="text-sm text-slate-500">No check-ins yet. Trend starts after the first answers.</p>
-              ) : (
-                <div className="grid gap-2 sm:grid-cols-3">
-                  {data.trend.map((row) => (
-                    <div key={row.period} className="rounded-xl border border-[#e4ddd2] bg-[#f4f1ea]/50 p-3 space-y-1">
-                      <p className="text-xs font-semibold text-slate-500">{row.period}</p>
-                      <p className="aid-display text-2xl">{row.helped_rate == null ? '—' : `${row.helped_rate}%`}</p>
-                      <p className="text-[11px] text-slate-500">{row.checkins} answers · helped</p>
-                      <p className="text-[11px] text-slate-600">Depth {row.avg_depth ?? '—'} · Life {row.avg_life ?? '—'}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="grid gap-2 sm:grid-cols-3">
+                {data.trend.map((row) => (
+                  <div key={row.period} className="rounded-xl border border-[#e4ddd2] bg-[#f4f1ea]/50 p-3 space-y-1">
+                    <p className="text-xs font-semibold text-slate-500">{row.period}</p>
+                    <p className="aid-display text-2xl">{row.helped_rate == null ? '—' : `${row.helped_rate}%`}</p>
+                    <p className="text-[11px] text-slate-500">{row.checkins} answers · said it helped</p>
+                    <p className="text-[11px] text-slate-600">
+                      Delivered {row.delivery_rate == null ? '—' : `${row.delivery_rate}%`} · {row.dispensed} of {row.cycles}
+                    </p>
+                    <p className="text-[11px] text-slate-600">Depth {row.avg_depth ?? '—'} · Life {row.avg_life ?? '—'}</p>
+                  </div>
+                ))}
+              </div>
             </section>
 
             <div className="print:hidden">

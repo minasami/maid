@@ -47,6 +47,16 @@ export function previousPeriod(period: string) {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
 }
 
+export function recentPeriods(period: string, count = 3) {
+  const out = [period];
+  let cursor = period;
+  for (let i = 1; i < count; i++) {
+    cursor = previousPeriod(cursor);
+    out.push(cursor);
+  }
+  return out.reverse();
+}
+
 export async function saveImpactCheckin(input: {
   company: string;
   emp_id: string;
@@ -162,6 +172,9 @@ export type ImpactSummary = {
     helped_rate: number | null;
     avg_depth: number | null;
     avg_life: number | null;
+    cycles: number;
+    dispensed: number;
+    delivery_rate: number | null;
   }>;
   prior: {
     period: string;
@@ -274,6 +287,13 @@ export async function getImpactSummary(
   const helpedYes = n(v.helped_yes);
   const helpedSome = n(v.helped_somewhat);
 
+  const months = recentPeriods(period, 3);
+  const trendVoiceParams: unknown[] = [months];
+  let trendVoiceWhere = 'period = ANY($1::text[])';
+  if (!scope.all && scope.companies.length) {
+    trendVoiceParams.push(scope.companies.map((c) => c.toLowerCase()));
+    trendVoiceWhere += ` AND lower(trim(company)) = ANY($${trendVoiceParams.length}::text[])`;
+  }
   const trendRes = await query<{
     period: string;
     checkins: string;
@@ -289,25 +309,45 @@ export async function getImpactSummary(
             coalesce(round(avg(depth)::numeric, 1), 0)::text AS avg_depth,
             coalesce(round(avg(life)::numeric, 1), 0)::text AS avg_life
      FROM impact_checkins
-     WHERE ${voiceWhere.replace('period = $1', 'period <= $1')}
-     GROUP BY period
-     ORDER BY period DESC
-     LIMIT 3`,
-    voiceParams
+     WHERE ${trendVoiceWhere}
+     GROUP BY period`,
+    trendVoiceParams
   );
-  const trend = trendRes.rows
-    .map((row) => {
-      const c = n(row.checkins);
-      const helped = n(row.helped_yes) + n(row.helped_somewhat);
-      return {
-        period: row.period,
-        checkins: c,
-        helped_rate: c ? Math.round((helped / c) * 100) : null,
-        avg_depth: c ? n(row.avg_depth) : null,
-        avg_life: c ? n(row.avg_life) : null,
-      };
-    })
-    .reverse();
+  const trendCycleParams: unknown[] = [months];
+  let trendCycleWhere = 'period = ANY($1::text[])';
+  if (!scope.all && scope.org_ids.length) {
+    trendCycleParams.push(scope.org_ids);
+    trendCycleWhere += ' AND program_id IN (SELECT id FROM chronic_programs WHERE org_id = ANY($2::uuid[]))';
+  }
+  const trendCycles = await query<{ period: string; cycles: string; dispensed: string }>(
+    `SELECT period,
+            count(*)::text AS cycles,
+            count(*) FILTER (WHERE status = 'dispensed')::text AS dispensed
+     FROM refill_cycles
+     WHERE ${trendCycleWhere}
+     GROUP BY period`,
+    trendCycleParams
+  );
+  const voiceByPeriod = new Map(trendRes.rows.map((row) => [row.period, row]));
+  const cycleByPeriod = new Map(trendCycles.rows.map((row) => [row.period, row]));
+  const trend = months.map((month) => {
+    const row = voiceByPeriod.get(month);
+    const cycle = cycleByPeriod.get(month);
+    const c = n(row?.checkins);
+    const helped = n(row?.helped_yes) + n(row?.helped_somewhat);
+    const cycleCount = n(cycle?.cycles);
+    const dispensedCount = n(cycle?.dispensed);
+    return {
+      period: month,
+      checkins: c,
+      helped_rate: c ? Math.round((helped / c) * 100) : null,
+      avg_depth: c ? n(row?.avg_depth) : null,
+      avg_life: c ? n(row?.avg_life) : null,
+      cycles: cycleCount,
+      dispensed: dispensedCount,
+      delivery_rate: cycleCount ? Math.round((dispensedCount / cycleCount) * 100) : null,
+    };
+  });
 
   const priorPeriod = previousPeriod(period);
   let prior: ImpactSummary['prior'] = null;
