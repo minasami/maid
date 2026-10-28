@@ -211,7 +211,7 @@ export default function Home() {
           </summary>
           <div className="border-t border-slate-100 px-4 pb-4 pt-3 space-y-2">
             <p className="text-xs text-slate-500 text-center">
-              Queue → Claims → Pharmacy → Programs → Refills
+              Queue → Claims → Pharmacy → Programs → Refills → Impact
             </p>
             <Suspense
               fallback={

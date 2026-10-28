@@ -5,21 +5,30 @@
 System of record: **Neon** (not Google Sheets).  
 Stack: **Next.js 14** · **Vercel** · **Neon PostgreSQL** · **GitHub**
 
-Live: [medical-aid-automation.vercel.app](https://medical-aid-automation.vercel.app)
+Live: [medical-aid-automation.vercel.app](https://medical-aid-automation.vercel.app)  
 Working fork: [minasami/maid](https://github.com/minasami/maid)  
-Guide: [/guide](https://medical-aid-automation.vercel.app/guide)
+Demo: [maid-beta.vercel.app/demo](https://maid-beta.vercel.app/demo)  
+Guide: [/guide](https://maid-beta.vercel.app/guide)
 
 ---
 
-## Primary cycle (use this)
+## Paths
+
+People (public): Submit → Status → Profile
+
+Staff: 1 Queue → 2 Claims → 3 Pharmacy → 4 Programs → 5 Refills → 6 Impact
 
 ```
 /intake          → beneficiary submits
-/intake-ops     → ops reviews + Process platform intake
-                   (match · enroll · claim draft)
-/claims         → review / submit amounts
-/programs       → chronic programs
-/pharmacy       → pick list · dispense
+/request-status  → track by request number
+/me              → profile, 2027 renewal, impact check-in
+/intake-ops      → queue + process
+/claims          → claim drafts
+/pharmacy        → EVA / not EVA · CSV
+/programs        → chronic programs
+/refills         → monthly cycle
+/impact          → reach, delivery, and what people say
+/demo            → shareable walkthrough
 ```
 
 | UI | Purpose |

@@ -10,6 +10,7 @@ const PUBLIC_ITEMS = [
   { href: '/request-status', label: 'Status', labelAr: 'حالة', icon: '2' },
   { href: '/me', label: 'Profile', labelAr: 'ملفي', icon: '3' },
   { href: '/guide', label: 'Help', labelAr: 'مساعدة', icon: '?' },
+  { href: '/demo', label: 'Demo', labelAr: 'عرض', icon: '▶' },
 ] as const;
 
 const STAFF_ITEMS = [

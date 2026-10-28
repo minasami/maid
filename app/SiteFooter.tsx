@@ -59,6 +59,11 @@ export function SiteFooter() {
                   How it works
                 </Link>
               </li>
+              <li>
+                <Link href="/demo" className="hover:text-emerald-700 transition">
+                  Live demo
+                </Link>
+              </li>
             </ul>
           </div>
 
