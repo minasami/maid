@@ -141,6 +141,19 @@ const STAFF_STEPS: Step[] = [
     cta: 'Open Refills',
     mock: 'none',
   },
+  {
+    n: 6,
+    id: 'staff-6',
+    titleEn: 'Impact',
+    titleAr: 'الأثر',
+    bodyEn:
+      'See who was reached, what was delivered, and whether people said it helped. Open one organization, print the board, or copy the WhatsApp ask.',
+    bodyAr:
+      'من وصلهم الدعم، وما تم صرفه، وهل قالوا إنه ساعد. افتح مؤسسة، اطبع اللوحة، أو انسخ رسالة الواتساب.',
+    href: '/impact',
+    cta: 'Open Impact',
+    mock: 'none',
+  },
 ];
 
 const MORE_TOOLS = [
@@ -267,7 +280,7 @@ export default function GuidePage() {
           </p>
           <p className="text-sm text-slate-500 max-w-lg mx-auto leading-relaxed">
             Submit → check status → open your profile. Staff follow Queue → Claims → Pharmacy →
-            Programs → Refills. No account is required for beneficiaries.
+            Programs → Refills → Impact. No account is required for beneficiaries.
           </p>
         </header>
 
@@ -352,7 +365,7 @@ export default function GuidePage() {
               لفريق التشغيل — نفس الشريط المرقّم في الصفحات
             </p>
             <p className="mt-3 text-xs sm:text-sm font-semibold text-[#0f6e56]">
-              Admin → Queue → Claims → Pharmacy → Programs → Refills
+              Admin → Queue → Claims → Pharmacy → Programs → Refills → Impact
             </p>
           </div>
 
