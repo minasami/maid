@@ -131,6 +131,9 @@ export default async function ImpactPage({
                   <div className="min-w-0">
                     <p className="font-semibold truncate">{org.name}</p>
                     <p className="text-xs text-slate-500">{org.unique_patients} people · {org.active_programs} programs</p>
+                    <p className="text-xs text-slate-500">
+                      Delivered {org.delivery_rate == null ? '—' : `${org.delivery_rate}%`} · helped {org.helped_rate == null ? '—' : `${org.helped_rate}%`}
+                    </p>
                     <p className="text-xs text-slate-400">{org.checkins} answers this month</p>
                   </div>
                 </Link>

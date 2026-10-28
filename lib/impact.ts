@@ -436,6 +436,8 @@ export type OrgImpactCard = {
   active_programs: number;
   unique_patients: number;
   checkins: number;
+  delivery_rate: number | null;
+  helped_rate: number | null;
 };
 
 /** One card per active organization, for the platform view. */
@@ -448,6 +450,10 @@ export async function getOrgImpactCards(period = currentPeriod()): Promise<OrgIm
     active_programs: string;
     unique_patients: string;
     checkins: string;
+    helped_yes: string;
+    helped_somewhat: string;
+    cycles: string;
+    dispensed: string;
   }>(
     `SELECT o.code, o.name, o.logo_url,
             (SELECT count(*)::text FROM chronic_programs p
@@ -457,18 +463,39 @@ export async function getOrgImpactCards(period = currentPeriod()): Promise<OrgIm
             (SELECT count(*)::text FROM impact_checkins c
               WHERE c.period = $1
                 AND (lower(trim(c.company)) = lower(o.code)
-                  OR lower(trim(c.company)) = lower(o.name))) AS checkins
+                  OR lower(trim(c.company)) = lower(o.name))) AS checkins,
+            (SELECT count(*) FILTER (WHERE c.helped = 'yes')::text FROM impact_checkins c
+              WHERE c.period = $1
+                AND (lower(trim(c.company)) = lower(o.code)
+                  OR lower(trim(c.company)) = lower(o.name))) AS helped_yes,
+            (SELECT count(*) FILTER (WHERE c.helped = 'somewhat')::text FROM impact_checkins c
+              WHERE c.period = $1
+                AND (lower(trim(c.company)) = lower(o.code)
+                  OR lower(trim(c.company)) = lower(o.name))) AS helped_somewhat,
+            (SELECT count(*)::text FROM refill_cycles rc
+              WHERE rc.period = $1
+                AND rc.program_id IN (SELECT id FROM chronic_programs WHERE org_id = o.id)) AS cycles,
+            (SELECT count(*)::text FROM refill_cycles rc
+              WHERE rc.period = $1 AND rc.status = 'dispensed'
+                AND rc.program_id IN (SELECT id FROM chronic_programs WHERE org_id = o.id)) AS dispensed
      FROM organizations o
      WHERE coalesce(o.status, 'active') = 'active'
      ORDER BY o.name`,
     [period]
   );
-  return rows.rows.map((r) => ({
-    code: r.code,
-    name: r.name,
-    logo_url: r.logo_url,
-    active_programs: n(r.active_programs),
-    unique_patients: n(r.unique_patients),
-    checkins: n(r.checkins),
-  }));
+  return rows.rows.map((r) => {
+    const checkins = n(r.checkins);
+    const cycles = n(r.cycles);
+    const helped = n(r.helped_yes) + n(r.helped_somewhat);
+    return {
+      code: r.code,
+      name: r.name,
+      logo_url: r.logo_url,
+      active_programs: n(r.active_programs),
+      unique_patients: n(r.unique_patients),
+      checkins,
+      delivery_rate: cycles ? Math.round((n(r.dispensed) / cycles) * 100) : null,
+      helped_rate: checkins ? Math.round((helped / checkins) * 100) : null,
+    };
+  });
 }
