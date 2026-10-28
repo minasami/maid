@@ -32,6 +32,9 @@ export default function Home() {
           <p className="text-sm text-slate-500 max-w-sm mx-auto">
             No account needed · بدون حساب — submit, track, or open your employee profile.
           </p>
+          <Link href="/demo" className="inline-flex text-sm font-semibold text-[#0f6e56] hover:underline">
+            See the live demo →
+          </Link>
         </header>
 
         <div

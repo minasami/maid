@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DemoShare } from './DemoShare';
 
 const STEPS = [
   {
@@ -59,10 +60,17 @@ export default function DemoPage() {
             <Link href="/org/register" className="rounded-2xl border bg-white px-5 py-2.5 text-sm font-semibold">
               Register an organization
             </Link>
+            <DemoShare />
           </div>
           <p className="text-xs text-slate-400">
             Live: maid-beta.vercel.app · No account for people. Staff sign in with Google.
           </p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/demo-poster.jpg"
+            alt="Medical Aid path: Queue, Claims, Pharmacy, Programs, Refills, Impact"
+            className="mx-auto w-full max-w-xl rounded-2xl border border-[#e4ddd2] shadow-sm"
+          />
         </header>
 
         <section className="space-y-3">
