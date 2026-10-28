@@ -18,6 +18,7 @@ const STAFF_ITEMS = [
   { href: '/pharmacy', label: 'Pharmacy', icon: '3' },
   { href: '/programs', label: 'Programs', icon: '4' },
   { href: '/refills', label: 'Refills', icon: '5' },
+  { href: '/impact', label: 'Impact', icon: '6' },
 ] as const;
 
 function isStaffPath(pathname: string) {
@@ -27,6 +28,7 @@ function isStaffPath(pathname: string) {
     pathname.startsWith('/pharmacy') ||
     pathname.startsWith('/programs') ||
     pathname.startsWith('/refills') ||
+    pathname.startsWith('/impact') ||
     pathname.startsWith('/notifications') ||
     pathname.startsWith('/admin') ||
     pathname.startsWith('/eva-split') ||

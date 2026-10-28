@@ -20,6 +20,7 @@ const OPS_PRIMARY = [
   { href: '/pharmacy', label: '3 Pharmacy', hint: 'EVA lists' },
   { href: '/programs', label: '4 Programs', hint: 'Chronic' },
   { href: '/refills', label: '5 Refills', hint: 'Monthly' },
+  { href: '/impact', label: '6 Impact', hint: 'Reach and voice' },
 ];
 
 const OPS_MORE = [
@@ -29,7 +30,6 @@ const OPS_MORE = [
   { href: '/dry-run', label: 'Dry-run' },
   { href: '/eva-split', label: 'EVA split' },
   { href: '/formulary', label: 'Formulary' },
-  { href: '/impact', label: 'Impact' },
   { href: '/reports', label: 'Reports' },
   { href: '/status', label: 'System status' },
 ];

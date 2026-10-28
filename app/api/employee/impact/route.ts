@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getImpactCheckin, saveImpactCheckin, type Helped } from '@/lib/impact';
+import { getImpactCheckin, saveImpactCheckin, currentPeriod, type Helped } from '@/lib/impact';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const company = req.nextUrl.searchParams.get('company') || '';
     const emp_id = req.nextUrl.searchParams.get('emp_id') || '';
     const phone = req.nextUrl.searchParams.get('phone') || '';
-    const period = req.nextUrl.searchParams.get('period') || undefined;
+    const period = req.nextUrl.searchParams.get('period') || currentPeriod();
     if (!company || !emp_id || !phone) {
       return NextResponse.json(
         { ok: false, error: 'company, emp_id, and phone are required' },
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       );
     }
     const checkin = await getImpactCheckin({ company, emp_id, phone, period });
-    return NextResponse.json({ ok: true, checkin });
+    return NextResponse.json({ ok: true, period, checkin });
   } catch (e: unknown) {
     return NextResponse.json(
       { ok: false, error: e instanceof Error ? e.message : 'Error' },

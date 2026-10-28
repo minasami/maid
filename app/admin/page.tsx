@@ -19,6 +19,7 @@ const OPS_PATH = [
   { href: '/pharmacy', n: '3', label: 'Pharmacy', ar: 'الصيدلية' },
   { href: '/programs', n: '4', label: 'Programs', ar: 'البرامج' },
   { href: '/refills', n: '5', label: 'Refills', ar: 'الصرف' },
+  { href: '/impact', n: '6', label: 'Impact', ar: 'الأثر' },
 ] as const;
 
 export default function AdminPage() {
@@ -47,7 +48,7 @@ export default function AdminPage() {
           <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 mb-2 px-1">
             Monthly path · المسار الشهري
           </p>
-          <div className="grid grid-cols-5 gap-1.5">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
             {OPS_PATH.map((s) => (
               <Link
                 key={s.href}

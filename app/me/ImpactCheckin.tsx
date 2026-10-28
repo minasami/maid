@@ -21,6 +21,7 @@ export function ImpactCheckin({
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [period, setPeriod] = useState('');
 
   useEffect(() => {
     fetch(`/api/orgs/logo?company=${encodeURIComponent(company)}`)
@@ -31,6 +32,7 @@ export function ImpactCheckin({
     fetch(`/api/employee/impact?${q}`)
       .then((r) => r.json())
       .then((d) => {
+        if (d.period) setPeriod(d.period);
         if (d.ok && d.checkin) {
           setHelped(d.checkin.helped);
           setDepth(d.checkin.depth);
@@ -82,7 +84,7 @@ export function ImpactCheckin({
           <img src={logoUrl} alt="" className="h-12 w-12 rounded-xl border object-contain bg-white" />
         )}
         <div>
-        <p className="aid-section-label">This month · هذا الشهر</p>
+        <p className="aid-section-label">{period || 'This month'} · هذا الشهر</p>
         <h2 className="aid-display text-xl">Did the support help?</h2>
         <p className="text-sm mt-1" style={{ color: 'var(--aid-muted)' }}>
           Your organization sees the totals, not a clinical diagnosis. One answer a month.

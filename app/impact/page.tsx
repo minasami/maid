@@ -98,6 +98,18 @@ export default async function ImpactPage({
               <Link href="/me" className="text-sm font-semibold text-[#0f6e56] hover:underline">
                 How people answer →
               </Link>
+              <a
+                href={`/api/impact/export?period=${encodeURIComponent(period)}${searchParams.org ? `&org=${encodeURIComponent(searchParams.org)}` : ''}&kind=board`}
+                className="text-sm font-semibold text-[#0f6e56] hover:underline"
+              >
+                Board CSV
+              </a>
+              <a
+                href={`/api/impact/export?period=${encodeURIComponent(period)}${searchParams.org ? `&org=${encodeURIComponent(searchParams.org)}` : ''}`}
+                className="text-sm font-semibold text-[#0f6e56] hover:underline"
+              >
+                Voices CSV
+              </a>
               <PrintButton />
             </div>
           </div>
