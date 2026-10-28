@@ -135,6 +135,9 @@ export default async function ImpactPage({
                       Delivered {org.delivery_rate == null ? '—' : `${org.delivery_rate}%`} · helped {org.helped_rate == null ? '—' : `${org.helped_rate}%`}
                     </p>
                     <p className="text-xs text-slate-400">{org.checkins} answers this month</p>
+                    {(org.unique_patients > 0 && org.checkins === 0) || (org.delivery_rate != null && org.delivery_rate < 80) ? (
+                      <p className="text-[11px] font-semibold text-amber-800">Needs a look</p>
+                    ) : null}
                   </div>
                 </Link>
               ))}
