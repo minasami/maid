@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { LiveDryRunButton } from './LiveDryRunButton';
 import { AdminGoogleAuth } from './AdminGoogleAuth';
+import { DashboardCards } from './DashboardCards';
 
 const OPS_CHECKLIST = [
   {
@@ -183,6 +184,7 @@ export function UnlockPanel() {
         <p className="text-[10px] text-center text-slate-500 font-semibold uppercase tracking-wide">
           Daily path · المسار اليومي
         </p>
+        <DashboardCards />
         <ol className="space-y-1.5">
           {OPS_CHECKLIST.map((s) => {
             const count =

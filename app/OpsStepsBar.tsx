@@ -11,6 +11,7 @@ const STEPS = [
   { href: '/pharmacy', label: 'Pharmacy', n: 3 },
   { href: '/programs', label: 'Programs', n: 4 },
   { href: '/refills', label: 'Refills', n: 5 },
+  { href: '/impact', label: 'Impact', n: 6 },
 ];
 
 /** Staff progress strip + Google Auth chip */

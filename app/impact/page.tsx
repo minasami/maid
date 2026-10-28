@@ -63,7 +63,7 @@ export default async function ImpactPage({
     <main className="min-h-screen p-4 sm:p-6 text-slate-900 pb-28 md:pb-16 print:p-0 print:pb-0">
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="space-y-3">
-          <div className="print:hidden"><FlowSteps current={5} /></div>
+          <div className="print:hidden"><FlowSteps current={6} /></div>
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div className="space-y-3">
               <OrgLogo

@@ -14,6 +14,7 @@ type Stats = {
   period: string;
   intake_pending?: number;
   claims_draft?: number;
+  pharmacy_open?: number;
 };
 
 export function DashboardCards() {
@@ -22,7 +23,7 @@ export function DashboardCards() {
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/dashboard')
+    fetch('/api/dashboard', { credentials: 'include' })
       .then((r) => r.json())
       .then((d) => {
         if (!d.ok) throw new Error(d.error || 'No data');
@@ -30,7 +31,7 @@ export function DashboardCards() {
       })
       .catch((e) => setErr(e.message));
 
-    fetch('/api/refills/safety-queue?limit=30')
+    fetch('/api/refills/safety-queue?limit=30', { credentials: 'include' })
       .then((r) => r.json())
       .then((d) => {
         if (d.ok) setSafetyFlagged(d.flagged ?? 0);
@@ -61,9 +62,10 @@ export function DashboardCards() {
 
   const pending = stats.intake_pending ?? 0;
   const drafts = stats.claims_draft ?? 0;
+  const pharmacy = stats.pharmacy_open ?? 0;
 
   return (
-    <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+    <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
       <Card
         label="Pending intake"
         value={String(pending)}
@@ -75,6 +77,12 @@ export function DashboardCards() {
         value={String(drafts)}
         href="/claims"
         highlight={drafts > 0}
+      />
+      <Card
+        label="Pharmacy open"
+        value={String(pharmacy)}
+        href="/pharmacy"
+        highlight={pharmacy > 0}
       />
       <Card
         label="Active programs"
@@ -98,6 +106,11 @@ export function DashboardCards() {
         label={`Approved ${stats.period}`}
         value={`${Math.round(stats.approved_this_month_egp).toLocaleString('en-EG')} EGP`}
         href="/reports"
+      />
+      <Card
+        label="Impact"
+        value={stats.period}
+        href="/impact"
       />
     </div>
   );

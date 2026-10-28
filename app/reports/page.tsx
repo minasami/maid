@@ -95,6 +95,12 @@ export default async function ReportsPage({
           >
             Chronic meds · مستحضرات مزمنة
           </Link>
+          <Link
+            href={`/impact?period=${encodeURIComponent(period)}`}
+            className="rounded-full px-3 py-1 border bg-white border-slate-200"
+          >
+            Impact · الأثر
+          </Link>
         </div>
 
         {error && (

@@ -6,13 +6,14 @@ const STEPS = [
   { n: 3, label: 'Pharmacy', href: '/pharmacy' },
   { n: 4, label: 'Programs', href: '/programs' },
   { n: 5, label: 'Refills', href: '/refills' },
+  { n: 6, label: 'Impact', href: '/impact' },
 ] as const;
 
-/** Progress strip for staff path 1–5 */
+/** Progress strip for staff path 1–6 */
 export function FlowSteps({
   current,
 }: {
-  current: 1 | 2 | 3 | 4 | 5;
+  current: 1 | 2 | 3 | 4 | 5 | 6;
 }) {
   return (
     <nav
@@ -71,7 +72,7 @@ export function FlowSteps({
         </Link>
       </div>
       <p className="mt-1.5 text-[10px] text-slate-500 sm:hidden" dir="rtl">
-        الخطوة {current} من 5
+        الخطوة {current} من 6
       </p>
     </nav>
   );
