@@ -53,6 +53,14 @@ const OPS_CHECKLIST = [
 
 const cred: RequestInit = { credentials: 'include' };
 
+type PathCounts = {
+  intake_pending?: number;
+  claims_draft?: number;
+  pharmacy_open?: number;
+  programs_active?: number;
+  refills_in_review?: number;
+};
+
 export function UnlockPanel() {
   const search = useSearchParams();
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
@@ -61,6 +69,7 @@ export function UnlockPanel() {
   const [secret, setSecret] = useState('');
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [counts, setCounts] = useState<PathCounts | null>(null);
   const showPrompt =
     search?.get('unlock') === '1' || search?.get('need_secret') === '1';
   const nextPath = search?.get('next');
@@ -82,6 +91,16 @@ export function UnlockPanel() {
   useEffect(() => {
     refreshUnlock();
   }, [refreshUnlock]);
+
+  useEffect(() => {
+    if (!unlocked) return;
+    fetch('/api/dashboard', cred)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.ok) setCounts(data);
+      })
+      .catch(() => setCounts(null));
+  }, [unlocked]);
 
   function onStaffChange(email: string | null, staffUnlocked: boolean) {
     setStaffEmail(email);
@@ -165,7 +184,15 @@ export function UnlockPanel() {
           Daily path · المسار اليومي
         </p>
         <ol className="space-y-1.5">
-          {OPS_CHECKLIST.map((s) => (
+          {OPS_CHECKLIST.map((s) => {
+            const count =
+              s.n === 1 ? counts?.intake_pending
+              : s.n === 2 ? counts?.claims_draft
+              : s.n === 3 ? counts?.pharmacy_open
+              : s.n === 4 ? counts?.programs_active
+              : s.n === 5 ? counts?.refills_in_review
+              : null;
+            return (
             <li key={s.n}>
               <Link
                 href={s.href}
@@ -174,7 +201,7 @@ export function UnlockPanel() {
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-700 text-[11px] font-bold text-white">
                   {s.n}
                 </span>
-                <span className="min-w-0">
+                <span className="min-w-0 flex-1">
                   <span className="block text-sm font-medium text-slate-800">
                     {s.title}{' '}
                     <span className="text-slate-400 font-normal" dir="rtl">
@@ -183,9 +210,15 @@ export function UnlockPanel() {
                   </span>
                   <span className="block text-[11px] text-slate-500">{s.hint}</span>
                 </span>
+                {count != null && (
+                  <span className="shrink-0 rounded-full bg-violet-100 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-violet-900">
+                    {count}
+                  </span>
+                )}
               </Link>
             </li>
-          ))}
+            );
+          })}
         </ol>
 
         <Link

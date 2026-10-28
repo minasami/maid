@@ -11,6 +11,7 @@ export type DashboardStats = {
   period: string;
   intake_pending: number;
   claims_draft: number;
+  pharmacy_open: number;
 };
 
 function currentPeriod() {
@@ -46,6 +47,7 @@ export async function getDashboardStats(
 
   let intake_pending = 0;
   let claims_draft = 0;
+  let pharmacy_open = 0;
   try {
     const ar = await query<{ n: string }>(
       `SELECT count(*)::text AS n FROM aid_requests
@@ -63,6 +65,16 @@ export async function getDashboardStats(
   } catch {
     /* optional */
   }
+  try {
+    const ph = await query<{ n: string }>(
+      `SELECT count(*)::text AS n FROM refill_cycles
+       WHERE period = $1 AND status <> 'dispensed'`,
+      [period]
+    );
+    pharmacy_open = Number(ph.rows[0]?.n) || 0;
+  } catch {
+    /* optional */
+  }
 
   return {
     programs_active: Number(prog.rows[0]?.active) || 0,
@@ -75,5 +87,6 @@ export async function getDashboardStats(
     period,
     intake_pending,
     claims_draft,
+    pharmacy_open,
   };
 }
