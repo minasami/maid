@@ -17,6 +17,13 @@ function pct(n: number | null) {
   return n == null ? '—' : `${n}%`;
 }
 
+function vsLast(curr: number | null, prev: number | null) {
+  if (curr == null || prev == null) return 'No last-month number';
+  const d = curr - prev;
+  if (d === 0) return 'Same as last month';
+  return `${d > 0 ? '+' : ''}${d} pts vs last month`;
+}
+
 function Bar({ value, max = 5 }: { value: number | null; max?: number }) {
   const w = value == null ? 0 : Math.round((value / max) * 100);
   return (
@@ -45,10 +52,10 @@ export default async function ImpactPage({
 
   const cards = data
     ? [
-        { label: 'People reached', ar: 'من وصلهم الدعم', value: String(data.reach.unique_patients), hint: `${data.reach.active_programs} active programs` },
-        { label: 'Continuity', ar: 'استمرار', value: `${data.continuity.avg_months_on_program} mo`, hint: `${data.continuity.dropouts} dropouts` },
-        { label: 'Delivered', ar: 'تم الصرف', value: pct(data.delivery.delivery_rate), hint: `${data.delivery.dispensed} of ${data.delivery.cycles}` },
-        { label: 'Said it helped', ar: 'قالوا إنه ساعد', value: pct(data.voice.helped_rate), hint: `${data.voice.checkins} answers` },
+        { label: 'People reached', ar: 'من وصلهم الدعم', value: String(data.reach.unique_patients), hint: `${data.reach.active_programs} active programs`, vs: null },
+        { label: 'Continuity', ar: 'استمرار', value: `${data.continuity.avg_months_on_program} mo`, hint: `${data.continuity.dropouts} dropouts`, vs: null },
+        { label: 'Delivered', ar: 'تم الصرف', value: pct(data.delivery.delivery_rate), hint: `${data.delivery.dispensed} of ${data.delivery.cycles}`, vs: vsLast(data.delivery.delivery_rate, data.prior?.delivery_rate ?? null) },
+        { label: 'Said it helped', ar: 'قالوا إنه ساعد', value: pct(data.voice.helped_rate), hint: `${data.voice.checkins} answers`, vs: vsLast(data.voice.helped_rate, data.prior?.helped_rate ?? null) },
       ]
     : [];
 
@@ -78,6 +85,7 @@ export default async function ImpactPage({
                   {data.reach.unique_patients} people reached · {data.continuity.avg_months_on_program} months average ·{' '}
                   {data.delivery.delivery_rate == null ? 'no deliveries yet' : `${data.delivery.delivery_rate}% delivered`} ·{' '}
                   {data.voice.helped_rate == null ? 'no answers yet' : `${data.voice.helped_rate}% said it helped`}.
+                  {data.prior ? ` Compared with ${data.prior.period}.` : ''}
                 </p>
               )}
             </div>
@@ -143,6 +151,7 @@ export default async function ImpactPage({
                   <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">{c.label}</p>
                   <p className="aid-display text-3xl">{c.value}</p>
                   <p className="text-[11px] text-slate-500">{c.hint}</p>
+                  {c.vs && <p className="text-[11px] font-medium text-[#0f6e56]">{c.vs}</p>}
                   <p className="text-[11px] text-slate-400" dir="rtl">{c.ar}</p>
                 </div>
               ))}

@@ -40,6 +40,13 @@ export function currentPeriod(d = new Date()) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
+export function previousPeriod(period: string) {
+  const [y, m] = period.split('-').map(Number);
+  if (!y || !m) return period;
+  const d = new Date(Date.UTC(y, m - 2, 1));
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+}
+
 export async function saveImpactCheckin(input: {
   company: string;
   emp_id: string;
@@ -156,6 +163,14 @@ export type ImpactSummary = {
     avg_depth: number | null;
     avg_life: number | null;
   }>;
+  prior: {
+    period: string;
+    delivery_rate: number | null;
+    dispensed: number;
+    cycles: number;
+    helped_rate: number | null;
+    checkins: number;
+  } | null;
 };
 
 function n(v: unknown) {
@@ -294,6 +309,50 @@ export async function getImpactSummary(
     })
     .reverse();
 
+  const priorPeriod = previousPeriod(period);
+  let prior: ImpactSummary['prior'] = null;
+  if (priorPeriod !== period) {
+    const priorParams: unknown[] = [priorPeriod];
+    let priorCycle = 'period = $1';
+    if (!scope.all && scope.org_ids.length) {
+      priorParams.push(scope.org_ids);
+      priorCycle += ' AND program_id IN (SELECT id FROM chronic_programs WHERE org_id = ANY($2::uuid[]))';
+    }
+    const priorOps = await query<{ cycles: string; dispensed: string }>(
+      `SELECT
+         (SELECT count(*)::text FROM refill_cycles WHERE ${priorCycle}) AS cycles,
+         (SELECT count(*)::text FROM refill_cycles WHERE ${priorCycle} AND status = 'dispensed') AS dispensed`,
+      priorParams
+    );
+    const priorVoiceParams: unknown[] = [priorPeriod];
+    let priorVoiceWhere = 'period = $1';
+    if (!scope.all && scope.companies.length) {
+      priorVoiceParams.push(scope.companies.map((c) => c.toLowerCase()));
+      priorVoiceWhere += ` AND lower(trim(company)) = ANY($${priorVoiceParams.length}::text[])`;
+    }
+    const priorVoice = await query<{ checkins: string; helped_yes: string; helped_somewhat: string }>(
+      `SELECT
+         count(*)::text AS checkins,
+         count(*) FILTER (WHERE helped = 'yes')::text AS helped_yes,
+         count(*) FILTER (WHERE helped = 'somewhat')::text AS helped_somewhat
+       FROM impact_checkins
+       WHERE ${priorVoiceWhere}`,
+      priorVoiceParams
+    );
+    const pc = n(priorOps.rows[0]?.cycles);
+    const pd = n(priorOps.rows[0]?.dispensed);
+    const pvc = n(priorVoice.rows[0]?.checkins);
+    const pHelped = n(priorVoice.rows[0]?.helped_yes) + n(priorVoice.rows[0]?.helped_somewhat);
+    prior = {
+      period: priorPeriod,
+      cycles: pc,
+      dispensed: pd,
+      delivery_rate: pc ? Math.round((pd / pc) * 100) : null,
+      checkins: pvc,
+      helped_rate: pvc ? Math.round((pHelped / pvc) * 100) : null,
+    };
+  }
+
   return {
     period,
     org_label: scope.label,
@@ -325,6 +384,7 @@ export async function getImpactSummary(
     },
     recent: recent.rows,
     trend,
+    prior,
   };
 }
 
