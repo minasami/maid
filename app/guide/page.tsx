@@ -276,12 +276,15 @@ export default function GuidePage() {
           <p className="aid-section-label">Guide · الدليل</p>
           <h1 className="aid-display text-3xl sm:text-4xl">How to use Medical Aid</h1>
           <p className="text-slate-600" dir="rtl">
-            ثلاث خطوات للمستفيد · خمس خطوات للتشغيل
+            ثلاث خطوات للمستفيد · ست خطوات للتشغيل
           </p>
           <p className="text-sm text-slate-500 max-w-lg mx-auto leading-relaxed">
             Submit → check status → open your profile. Staff follow Queue → Claims → Pharmacy →
             Programs → Refills → Impact. No account is required for beneficiaries.
           </p>
+          <Link href="/demo" className="inline-flex text-sm font-semibold text-[#0f6e56] hover:underline">
+            Live demo →
+          </Link>
         </header>
 
         <nav

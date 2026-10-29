@@ -12,6 +12,7 @@ const PUBLIC_EXACT = new Set([
   '/org/register',
   '/guide',
   '/demo',
+  '/medical-aid-one-pager.pdf',
   '/status',
   '/admin',
   '/icon',

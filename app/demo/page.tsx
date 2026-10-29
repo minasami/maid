@@ -61,6 +61,12 @@ export default function DemoPage() {
               Register an organization
             </Link>
             <DemoShare />
+            <a
+              href="/medical-aid-one-pager.pdf"
+              className="rounded-2xl border bg-white px-5 py-2.5 text-sm font-semibold"
+            >
+              One-pager PDF
+            </a>
           </div>
           <p className="text-xs text-slate-400">
             Live: maid-beta.vercel.app · No account for people. Staff sign in with Google.

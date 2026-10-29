@@ -37,26 +37,27 @@ export default async function ReportsPage({
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 text-slate-900 pb-28 md:pb-16">
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="space-y-3">
-          <FlowSteps current={5} />
+          <FlowSteps current={6} />
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs text-violet-600 font-medium">
-                More tools · Reports
-              </p>
-              <h1 className="text-2xl font-semibold">تقارير الأدوية</h1>
+              <p className="aid-section-label">More tools · Reports</p>
+              <h1 className="aid-display text-3xl">Reports</h1>
               <p className="text-sm text-slate-600">
-                Monthly dispense · chronic catalog · CSV · {period}
+                Monthly dispense and the chronic catalog · {period}
+              </p>
+              <p className="text-sm text-slate-500" dir="rtl">
+                الصرف الشهري · المستحضرات المزمنة · CSV
               </p>
             </div>
             <div className="hidden sm:flex flex-wrap gap-2 text-sm items-center">
-              <Link href="/refills" className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50">
-                ← Refills
+              <Link href="/impact" className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50">
+                ← Impact
               </Link>
               <Link href="/pharmacy" className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50">
                 Pharmacy
               </Link>
-              <Link href="/programs" className="rounded-xl bg-violet-700 px-3 py-2 font-semibold text-white">
-                Programs →
+              <Link href="/programs" className="rounded-xl bg-[#0f6e56] px-3 py-2 font-semibold text-white">
+                Programs
               </Link>
             </div>
           </div>
