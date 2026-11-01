@@ -33,11 +33,13 @@ export default async function PspPage({
       <div className="mx-auto max-w-6xl space-y-6">
         <header className="flex flex-wrap justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold">
-              برنامج دعم المرضى (PSP)
-            </h1>
+            <p className="aid-section-label">More tools · PSP</p>
+            <h1 className="aid-display text-3xl">Patient support</h1>
             <p className="text-sm text-slate-600">
-              معمارية Axios · رحلة المريض · أهلية · التزام بالعلاج
+              Journey, eligibility, and adherence.
+            </p>
+            <p className="text-sm text-slate-500" dir="rtl">
+              رحلة المريض · أهلية · التزام بالعلاج
             </p>
           </div>
           <div className="flex flex-wrap gap-3 text-sm">
