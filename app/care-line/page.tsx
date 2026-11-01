@@ -33,12 +33,10 @@ export default async function CareLinePage({
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 text-slate-900 pb-28 md:pb-16">
       <div className="mx-auto max-w-6xl space-y-6">
         <header className="space-y-3">
-          <FlowSteps current={4} />
+          <FlowSteps current={6} />
           <div className="flex flex-wrap justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
-                Related to Programs · Care line
-              </p>
+              <p className="aid-section-label">Related to Programs · Care line</p>
               <h1 className="aid-display text-3xl sm:text-4xl">
                 Care Line · تقويم الصرف
               </h1>
@@ -55,9 +53,9 @@ export default async function CareLinePage({
               </Link>
               <Link
                 href="/pharmacy"
-                className="rounded-xl bg-teal-600 px-3 py-2 font-semibold text-white"
+                className="rounded-xl bg-[#0f6e56] px-3 py-2 font-semibold text-white"
               >
-                Pharmacy →
+                Pharmacy
               </Link>
             </div>
           </div>

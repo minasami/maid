@@ -34,37 +34,27 @@ export default async function AnalyticsPage({
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 text-slate-900 pb-28 md:pb-16">
       <div className="mx-auto max-w-6xl space-y-6">
         <header className="space-y-3">
-          <FlowSteps current={5} />
+          <FlowSteps current={6} />
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
-                More tools · Analytics
+              <p className="aid-section-label">More tools · Analytics</p>
+              <h1 className="aid-display text-3xl sm:text-4xl">Analytics</h1>
+              <p className="text-sm text-slate-600">
+                Indicators, EVA split, top medicines, people, and the month.
               </p>
-              <h1 className="aid-display text-3xl sm:text-4xl">
-                Medical analytics · تحليلات
-              </h1>
-              <p className="text-sm text-slate-600" dir="rtl">
+              <p className="text-sm text-slate-500" dir="rtl">
                 مؤشرات · توزيع EVA · أعلى الأدوية · موظفون · سلسلة زمنية
               </p>
             </div>
             <div className="hidden sm:flex flex-wrap gap-2 text-sm">
-              <Link
-                href="/reports"
-                className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50"
-              >
+              <Link href="/impact" className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50">
+                ← Impact
+              </Link>
+              <Link href="/reports" className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50">
                 Reports
               </Link>
-              <Link
-                href="/eva-split"
-                className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50"
-              >
-                EVA split
-              </Link>
-              <Link
-                href="/pharmacy"
-                className="rounded-xl bg-teal-600 px-3 py-2 font-semibold text-white"
-              >
-                Pharmacy →
+              <Link href="/pharmacy" className="rounded-xl bg-[#0f6e56] px-3 py-2 font-semibold text-white">
+                Pharmacy
               </Link>
             </div>
           </div>

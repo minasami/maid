@@ -31,12 +31,10 @@ export default async function InventoryPage({
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 text-slate-900 pb-28 md:pb-16">
       <div className="mx-auto max-w-5xl space-y-5">
         <header className="space-y-3">
-          <FlowSteps current={3} />
+          <FlowSteps current={6} />
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
-                More tools · Inventory
-              </p>
+              <p className="aid-section-label">More tools · Inventory</p>
               <h1 className="aid-display text-3xl sm:text-4xl">
                 Inventory
               </h1>

@@ -41,12 +41,10 @@ export default async function EvaSplitPage({
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 text-slate-900 pb-28 md:pb-16">
       <div className="mx-auto max-w-6xl space-y-6">
         <header className="space-y-3">
-          <FlowSteps current={3} />
+          <FlowSteps current={6} />
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
-                Related to Step 3 · Pharmacy
-              </p>
+              <p className="aid-section-label">Related to Pharmacy · EVA split</p>
               <h1 className="aid-display text-3xl sm:text-4xl">
                 EVA split · تقسيم الاعتماد
               </h1>

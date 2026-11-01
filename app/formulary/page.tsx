@@ -27,12 +27,10 @@ export default async function FormularyPage({
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 text-slate-900 pb-28 md:pb-16">
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="space-y-3">
-          <FlowSteps current={1} />
+          <FlowSteps current={6} />
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
-                More tools · Formulary
-              </p>
+              <p className="aid-section-label">More tools · Formulary</p>
               <h1 className="aid-display text-3xl sm:text-4xl">
                 Medicine formulary
               </h1>
@@ -42,10 +40,10 @@ export default async function FormularyPage({
             </div>
             <div className="hidden sm:flex flex-wrap gap-2 text-sm">
               <Link
-                href="/intake-ops"
-                className="rounded-xl bg-violet-700 text-white px-3 py-2 font-semibold hover:bg-violet-800"
+                href="/impact"
+                className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50"
               >
-                ← Queue
+                ← Impact
               </Link>
               <Link
                 href="/pharmacy"
