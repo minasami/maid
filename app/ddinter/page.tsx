@@ -23,12 +23,10 @@ export default async function DdinterPage() {
     <main className="min-h-screen bg-slate-50 p-4 sm:p-6 text-slate-900 pb-28 md:pb-16">
       <div className="mx-auto max-w-3xl space-y-6">
         <header className="space-y-3">
-          <FlowSteps current={5} />
+          <FlowSteps current={6} />
           <div className="flex flex-wrap justify-between gap-3">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
-                Clinical tools · DDInter
-              </p>
+              <p className="aid-section-label">Clinical tools · DDInter</p>
               <h1 className="aid-display text-3xl sm:text-4xl">DDInter 2.0</h1>
               <p className="text-sm text-slate-600" dir="rtl">
                 تفاعلات دوائية · استيراد محلي
@@ -37,7 +35,7 @@ export default async function DdinterPage() {
                 Source:{' '}
                 <a
                   href="https://ddinter2.scbdd.com"
-                  className="text-violet-700 hover:underline"
+                  className="text-[#0f6e56] hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >

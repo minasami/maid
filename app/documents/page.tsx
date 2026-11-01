@@ -33,20 +33,24 @@ export default async function DocumentsPage({
       <div className="mx-auto max-w-5xl space-y-6">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold">نظام التوثيق الطبي</h1>
+            <p className="aid-section-label">More tools · Documents</p>
+            <h1 className="aid-display text-3xl">Documents</h1>
             <p className="text-sm text-slate-600">
+              Prescriptions, labs, cards, invoices, and program files.
+            </p>
+            <p className="text-sm text-slate-500" dir="rtl">
               روشتات · تحاليل · كارنيه · فواتير · مرفقات البرامج المزمنة
             </p>
           </div>
-          <div className="flex flex-wrap gap-3 text-sm">
-            <Link href="/requests" className="text-blue-600 hover:underline">
-              الطلبات
+          <div className="hidden sm:flex flex-wrap gap-2 text-sm">
+            <Link href="/impact" className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50">
+              ← Impact
             </Link>
-            <Link href="/programs" className="text-blue-600 hover:underline">
-              البرامج
+            <Link href="/programs" className="rounded-xl border bg-white px-3 py-2 font-medium hover:bg-slate-50">
+              Programs
             </Link>
-            <Link href="/" className="text-blue-600 hover:underline">
-              الرئيسية
+            <Link href="/intake-ops" className="rounded-xl bg-[#0f6e56] px-3 py-2 font-semibold text-white">
+              Queue
             </Link>
           </div>
         </header>
