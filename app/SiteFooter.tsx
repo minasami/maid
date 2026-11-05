@@ -64,6 +64,14 @@ export function SiteFooter() {
                   Live demo
                 </Link>
               </li>
+              <li>
+                <a
+                  href="/medical-aid-one-pager.pdf"
+                  className="hover:text-emerald-700 transition"
+                >
+                  One-pager PDF
+                </a>
+              </li>
             </ul>
           </div>
 
