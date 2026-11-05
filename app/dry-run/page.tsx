@@ -157,13 +157,14 @@ export default async function DryRunPage() {
     <main className="min-h-screen bg-slate-50 p-6 text-slate-900">
       <div className="mx-auto max-w-3xl space-y-6">
         <header className="space-y-3">
-          <FlowSteps current={5} />
+          <FlowSteps current={6} />
           <div className="flex flex-wrap justify-between gap-3">
             <div>
-              <p className="text-xs text-amber-700 font-medium">
-                Ops practice · no live pharmacy batch · WhatsApp dry-run only
+              <p className="aid-section-label">Ops practice · dry-run</p>
+              <h1 className="aid-display text-3xl">Dry-run script</h1>
+              <p className="text-sm text-amber-800">
+                Practice only. No live pharmacy batch. WhatsApp stays in dry-run.
               </p>
-              <h1 className="text-2xl font-semibold">Live dry-run script</h1>
               <p className="text-sm text-slate-600" dir="rtl">
                 سيناريو تجريبي لهذا الشهر — بدون إرسال واتساب حقيقي من أزرار هذه الصفحة
               </p>

@@ -15,9 +15,13 @@ export default function SubmitGuidePage() {
     <main className="min-h-screen bg-slate-50 p-6 text-slate-900">
       <div className="mx-auto max-w-xl space-y-6">
         <header className="space-y-1">
-          <h1 className="text-2xl font-semibold">تقديم طلب علاج شهري</h1>
+          <p className="aid-section-label">For you · Submit</p>
+          <h1 className="aid-display text-3xl">Submit</h1>
           <p className="text-sm text-slate-600">
-            Platform intake · MSH catalog · full cycle on Neon
+            Monthly medicine request. About 3–5 minutes. It saves as you type.
+          </p>
+          <p className="text-sm text-slate-500" dir="rtl">
+            تقديم طلب علاج شهري
           </p>
         </header>
 

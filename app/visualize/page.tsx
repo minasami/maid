@@ -229,9 +229,13 @@ export default async function VisualizePage({
       <div className="mx-auto max-w-6xl space-y-6">
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-semibold">تصور البيانات الصحية</h1>
+            <p className="aid-section-label">More tools · Visualize</p>
+            <h1 className="aid-display text-3xl">Visualize</h1>
             <p className="text-sm text-slate-600">
-              مخططات تفاعلية للبرامج المزمنة · EVA · الصرف
+              Charts for programs, EVA, and dispense.
+            </p>
+            <p className="text-sm text-slate-500" dir="rtl">
+              مخططات للبرامج المزمنة · EVA · الصرف
             </p>
           </div>
           <div className="flex flex-wrap gap-3 text-sm">
