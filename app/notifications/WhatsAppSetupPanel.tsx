@@ -35,24 +35,47 @@ export function WhatsAppSetupPanel({
         تأكيد الاستلام وتذكير الصرف وحملة ٢٠٢٧ تمر من هنا. الوضع التجريبي مفعّل حتى تربط مزوداً.
       </p>
       {!ready && (
-        <ol className="space-y-2 text-sm text-slate-700">
-          <li className="rounded-xl bg-slate-50 px-3 py-2">
-            <strong>Meta Cloud API</strong> — set <code>WHATSAPP_PROVIDER=meta</code>,{' '}
-            <code>WHATSAPP_TOKEN</code>, <code>WHATSAPP_PHONE_NUMBER_ID</code>
-            {hasMeta ? ' · keys present' : ''}
-          </li>
-          <li className="rounded-xl bg-slate-50 px-3 py-2">
-            <strong>Twilio</strong> — set <code>WHATSAPP_PROVIDER=twilio</code>,{' '}
-            <code>TWILIO_ACCOUNT_SID</code>, <code>TWILIO_AUTH_TOKEN</code>,{' '}
-            <code>TWILIO_WHATSAPP_FROM</code>
-            {hasTwilio ? ' · keys present' : ''}
-          </li>
-          <li className="rounded-xl bg-slate-50 px-3 py-2">
-            <strong>Webhook</strong> — <code>WHATSAPP_WEBHOOK_URL</code> receives JSON{' '}
-            <code>{'{ to, body }'}</code>
-            {hasWebhook ? ' · set' : ''}
-          </li>
-        </ol>
+        <div className="space-y-2 text-sm text-slate-700">
+          <p className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-amber-950">
+            Nothing to send with yet. Dry-run is on. Paste one set of keys here in chat and I will set them on Vercel and redeploy. I will not invent keys.
+          </p>
+          <ol className="space-y-2">
+            <li className="rounded-xl bg-slate-50 px-3 py-2">
+              <strong>Meta Cloud API</strong>
+              {' — '}
+              <a className="underline" href="https://developers.facebook.com/" target="_blank" rel="noreferrer">
+                Meta for Developers
+              </a>
+              <div className="mt-1 font-mono text-xs text-slate-600">
+                WHATSAPP_PROVIDER=meta
+                <br />
+                WHATSAPP_TOKEN=…
+                <br />
+                WHATSAPP_PHONE_NUMBER_ID=…
+              </div>
+            </li>
+            <li className="rounded-xl bg-slate-50 px-3 py-2">
+              <strong>Twilio</strong>
+              {' — '}
+              <a className="underline" href="https://console.twilio.com/" target="_blank" rel="noreferrer">
+                Twilio console
+              </a>
+              <div className="mt-1 font-mono text-xs text-slate-600">
+                WHATSAPP_PROVIDER=twilio
+                <br />
+                TWILIO_ACCOUNT_SID=AC…
+                <br />
+                TWILIO_AUTH_TOKEN=…
+                <br />
+                TWILIO_WHATSAPP_FROM=whatsapp:+…
+              </div>
+            </li>
+            <li className="rounded-xl bg-slate-50 px-3 py-2">
+              <strong>Webhook</strong> — any endpoint that accepts JSON <code>{'{ to, body }'}</code>
+              <div className="mt-1 font-mono text-xs text-slate-600">WHATSAPP_WEBHOOK_URL=https://…</div>
+            </li>
+          </ol>
+        </div>
       )}
       <p className="text-xs text-slate-400">
         After saving env vars, redeploy. Full steps in <code>docs/whatsapp-setup.md</code>.
