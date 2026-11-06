@@ -194,6 +194,17 @@ export default function Home() {
         <section className="space-y-2">
           <PartnerLogos />
           <Link
+            href="/pilot"
+            className="block rounded-2xl border border-emerald-200 bg-emerald-50/80 px-4 py-3.5 text-center shadow-sm hover:bg-emerald-50 transition"
+          >
+            <span className="block text-sm font-semibold text-emerald-900">
+              Paid pilot · 20,000 EGP / month
+            </span>
+            <span className="block text-xs text-emerald-800 mt-0.5" dir="rtl">
+              تجربة مدفوعة لمنظمة واحدة
+            </span>
+          </Link>
+          <Link
             href="/org/register"
             className="block rounded-2xl border border-dashed border-emerald-200/80 bg-white/70 px-4 py-3.5 text-center text-sm font-medium text-emerald-900 hover:bg-emerald-50/80 transition"
           >
