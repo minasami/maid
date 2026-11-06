@@ -81,6 +81,16 @@ export function SiteFooter() {
             </p>
             <ul className="space-y-1.5 text-slate-600">
               <li>
+                <Link href="/pilot" className="hover:text-[#0f6e56] transition">
+                  Paid pilot
+                </Link>
+              </li>
+              <li>
+                <Link href="/invoice" className="hover:text-[#0f6e56] transition">
+                  Invoice
+                </Link>
+              </li>
+              <li>
                 <Link
                   href="/org/register"
                   className="hover:text-[#0f6e56] transition"
@@ -104,7 +114,11 @@ export function SiteFooter() {
 
         <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-slate-100 pt-4 text-[11px] text-slate-400">
           <p>© 2026 Medical Aid · Secure · bilingual · mobile-first</p>
-          <p dir="rtl">آمن · عربي / إنجليزي · مناسب للجوال</p>
+          <p className="flex gap-3">
+            <Link href="/terms" className="hover:text-slate-600">Terms</Link>
+            <Link href="/privacy" className="hover:text-slate-600">Privacy</Link>
+            <Link href="/dpa" className="hover:text-slate-600">Data note</Link>
+          </p>
         </div>
       </div>
     </footer>
