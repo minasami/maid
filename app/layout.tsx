@@ -9,6 +9,7 @@ import { InstallPrompt } from './InstallPrompt';
 import { RegisterSW } from './RegisterSW';
 import { SiteFooter } from './SiteFooter';
 import { WhatsAppButton } from './WhatsAppButton';
+import { BackButton } from './BackButton';
 
 export const metadata: Metadata = {
   title: {
@@ -135,6 +136,9 @@ export default function RootLayout({
         </a>
         <AppNav />
         <div className="mx-auto max-w-6xl px-4 pt-3 w-full">
+          <div className="mb-2">
+            <BackButton />
+          </div>
           <SetupBanner />
           <div className="mt-2"><BetaBanner /></div>
         </div>
