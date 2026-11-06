@@ -60,6 +60,16 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <a
+                  href="https://wa.me/201225597010"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-emerald-700 transition"
+                >
+                  WhatsApp
+                </a>
+              </li>
+              <li>
                 <Link href="/demo" className="hover:text-emerald-700 transition">
                   Live demo
                 </Link>

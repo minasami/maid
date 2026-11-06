@@ -8,6 +8,7 @@ import { SplashScreen } from './SplashScreen';
 import { InstallPrompt } from './InstallPrompt';
 import { RegisterSW } from './RegisterSW';
 import { SiteFooter } from './SiteFooter';
+import { WhatsAppButton } from './WhatsAppButton';
 
 export const metadata: Metadata = {
   title: {
@@ -144,6 +145,7 @@ export default function RootLayout({
           <SiteFooter />
         </div>
         <MobilePublicNav />
+        <WhatsAppButton />
         <InstallPrompt />
       </body>
     </html>
