@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export default function OrgRegisterPage() {
@@ -19,6 +19,13 @@ export default function OrgRegisterPage() {
     message: string;
     org?: { code: string; name: string; slug: string };
   } | null>(null);
+
+  useEffect(() => {
+    const intent = new URLSearchParams(window.location.search).get('intent');
+    if (intent === 'pilot') {
+      setMessage('Paid pilot — 20,000 EGP per month. Please approve this organization.');
+    }
+  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
