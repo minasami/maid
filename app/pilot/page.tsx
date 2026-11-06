@@ -51,7 +51,7 @@ export default function PilotPage() {
       <section className="aid-card p-4 space-y-2 text-sm text-slate-700" id="onboarding">
         <h2 className="font-semibold text-slate-900">Onboarding, without us in the loop</h2>
         <ol className="list-decimal pl-5 space-y-1">
-          <li>Organization registers at <Link href="/org/register" className="underline">/org/register</Link>.</li>
+          <li>Organization registers at <Link href="/org/register?intent=pilot" className="underline">/org/register</Link>. The message is prefilled for the pilot.</li>
           <li>An allow-listed admin approves it.</li>
           <li>The org admin invites operators. They sign in with Google.</li>
           <li>Staff follow the numbered path on Home. People use Submit and Status only.</li>
@@ -60,8 +60,8 @@ export default function PilotPage() {
       </section>
 
       <div className="flex flex-wrap gap-2 justify-center">
-        <Link href="/org/register" className="aid-cta-primary px-5 py-2.5 text-sm">
-          Register an organization
+        <Link href="/org/register?intent=pilot" className="aid-cta-primary px-5 py-2.5 text-sm">
+          Start the pilot
         </Link>
         <Link href="/invoice" className="rounded-2xl border bg-white px-5 py-2.5 text-sm font-semibold">
           Make an invoice
