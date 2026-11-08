@@ -55,6 +55,12 @@ export default function InvoicePage({
       </header>
 
       <section className="aid-card p-4 text-sm space-y-1">
+        <p className="text-xs uppercase tracking-wide text-slate-400">From</p>
+        <p className="font-semibold text-slate-900">Medicine Support Hub</p>
+        <p className="text-slate-500">WhatsApp +20 12 25597010</p>
+      </section>
+
+      <section className="aid-card p-4 text-sm space-y-1">
         <p className="text-xs uppercase tracking-wide text-slate-400">Bill to</p>
         <p className="font-semibold text-slate-900">{org}</p>
         <p className="text-slate-500">Period: {month}</p>
