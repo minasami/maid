@@ -13,15 +13,32 @@ function clean(v: string | string[] | undefined, fallback: string) {
   return (s || fallback).toString().slice(0, 80);
 }
 
+function issuedToday() {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Africa/Cairo',
+  }).format(new Date());
+}
+
 export default function InvoicePage({
   searchParams,
 }: {
-  searchParams: { org?: string; month?: string; ref?: string };
+  searchParams: {
+    org?: string;
+    month?: string;
+    ref?: string;
+    bank?: string;
+    account?: string;
+  };
 }) {
   const org = clean(searchParams.org, 'Organization name');
   const month = clean(searchParams.month, 'November 2026');
   const ref = clean(searchParams.ref, 'MA-PILOT-001');
-  const issued = '6 November 2026';
+  const bank = clean(searchParams.bank, '');
+  const account = clean(searchParams.account, '');
+  const issued = issuedToday();
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
@@ -70,14 +87,18 @@ export default function InvoicePage({
       </table>
 
       <section className="text-xs text-slate-500 space-y-1">
-        <p>Payment: bank transfer. Send proof to the staff contact on file.</p>
+        <p>
+          Payment: bank transfer
+          {bank ? ` · ${bank}` : ''}
+          {account ? ` · ${account}` : ''}. Send proof to the staff contact on file.
+        </p>
         <p>
           This invoice follows the <Link href="/terms" className="underline">terms</Link> and the{' '}
           <Link href="/dpa" className="underline">data processing note</Link>.
         </p>
       </section>
 
-      <form className="aid-card p-4 space-y-2 text-sm" action="/invoice">
+      <form className="aid-card p-4 space-y-2 text-sm print:hidden" action="/invoice">
         <p className="font-semibold text-slate-900">Fill and print</p>
         <label className="block">
           <span className="text-xs text-slate-500">Organization</span>
@@ -90,6 +111,14 @@ export default function InvoicePage({
         <label className="block">
           <span className="text-xs text-slate-500">Reference</span>
           <input name="ref" defaultValue={ref} className="mt-1 w-full rounded-xl border px-3 py-2" />
+        </label>
+        <label className="block">
+          <span className="text-xs text-slate-500">Bank</span>
+          <input name="bank" defaultValue={bank} className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Bank name" />
+        </label>
+        <label className="block">
+          <span className="text-xs text-slate-500">Account</span>
+          <input name="account" defaultValue={account} className="mt-1 w-full rounded-xl border px-3 py-2" placeholder="Account or IBAN" />
         </label>
         <button className="aid-cta-primary px-4 py-2 text-sm" type="submit">
           Update invoice
