@@ -35,7 +35,7 @@ export default function PilotPage() {
           <li>Public path: submit a request, check status, employee profile.</li>
           <li>Google sign-in for staff. Organization registration by approval.</li>
           <li>Egyptian drug catalog and formulary routing (EVA / not EVA).</li>
-          <li>WhatsApp notices, once Meta approves the account and templates.</li>
+          <li>WhatsApp notices. Templates are approved. Delivery starts when Meta finishes the account review.</li>
         </ul>
       </section>
 
