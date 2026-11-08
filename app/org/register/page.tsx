@@ -144,6 +144,15 @@ export default function OrgRegisterPage() {
               </div>
             )}
             <div className="flex flex-wrap gap-3 text-sm">
+              {pending && result.org && (
+                <Link
+                  href={`/invoice?org=${encodeURIComponent(result.org.name)}`}
+                  className="font-semibold underline"
+                  style={{ color: 'var(--aid-emerald)' }}
+                >
+                  Print the invoice
+                </Link>
+              )}
               <Link href="/impact" className="font-semibold underline" style={{ color: 'var(--aid-emerald)' }}>
                 Beneficiary impact
               </Link>
