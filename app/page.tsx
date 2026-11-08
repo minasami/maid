@@ -205,10 +205,10 @@ export default function Home() {
             </span>
           </Link>
           <Link
-            href="/org/register"
+            href="/pilot"
             className="block rounded-2xl border border-dashed border-emerald-200/80 bg-white/70 px-4 py-3.5 text-center text-sm font-medium text-emerald-900 hover:bg-emerald-50/80 transition"
           >
-            Create organization account · إنشاء حساب مؤسسة
+            Start the paid pilot · ابدأ التجربة المدفوعة
           </Link>
         </section>
 
