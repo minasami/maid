@@ -13,6 +13,17 @@ function clean(v: string | string[] | undefined, fallback: string) {
   return (s || fallback).toString().slice(0, 80);
 }
 
+function dueInDays(days: number) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Africa/Cairo',
+  }).format(d);
+}
+
 function issuedToday() {
   return new Intl.DateTimeFormat('en-GB', {
     day: 'numeric',
@@ -39,6 +50,7 @@ export default function InvoicePage({
   const bank = clean(searchParams.bank, '');
   const account = clean(searchParams.account, '');
   const issued = issuedToday();
+  const due = dueInDays(14);
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8 space-y-6">
@@ -51,6 +63,7 @@ export default function InvoicePage({
         <p className="text-right text-sm text-slate-600">
           <span className="block font-semibold text-slate-900">{ref}</span>
           Issued {issued}
+          <span className="block">Due {due}</span>
         </p>
       </header>
 
