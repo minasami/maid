@@ -28,11 +28,11 @@ export function WhatsAppSetupPanel({
         </span>
       </div>
       <p className="text-sm text-slate-600">
-        Intake confirmations, refill reminders, and the 2027 renewal campaign all go through this channel.
-        Dry-run is on until a provider is set.
+        Meta is connected. Approved templates are on for request received, refill due, status update, and care-line follow-up.
+        Sends outside the 24-hour window wait on Meta finishing the business review.
       </p>
       <p className="text-sm text-slate-500" dir="rtl">
-        تأكيد الاستلام وتذكير الصرف وحملة ٢٠٢٧ تمر من هنا. الوضع التجريبي مفعّل حتى تربط مزوداً.
+        ميتا مربوطة. القوالب المعتمدة مفعّلة. الإرسال خارج نافذة ٢٤ ساعة ينتظر اعتماد الحساب.
       </p>
       {!ready && (
         <div className="space-y-2 text-sm text-slate-700">
